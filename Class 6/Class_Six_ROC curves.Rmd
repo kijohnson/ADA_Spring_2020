@@ -1,0 +1,300 @@
+---
+title: "Class Six--Logistic regression as a classifier"
+author: "Kim Johnson"
+date: "February 19, 2020"
+output:
+  powerpoint_presentation: 
+    reference_doc: template.pptx
+---
+
+# Learning objectives
+- Review of sensitivity, specificity, positive and negative predictive values
+- Understand distinction between use of logistic regression for risk prediction vs. classification
+- Understand how ROC curves can be used to evaluate model classification performance
+- Understand limitations of logistic as a classifier
+
+---
+
+# What is validity?
+
+- The ability of a test to distinguish between who has a disease and who does not (Xzklo and Nieto)
+
+# Recall 2 x 2 table set-up for calculating measures of validity
+
+![Sensitivity and Specificity](Validity1.png)
+
+# Positive and negative predictive values
+
+![Predictive values](PVs.png)
+
+# Cutpoints for continous variables impact on sensitivity and specificity
+
+![Thresholds](Validity2.png)
+
+# Prediction vs. classification  
+
+- **Prediction** is a tendency (probablistic) of whether a condition or set of conditions poses a higher or lower risk of a characteristic  
+- **Classification** is a decision of whether a condition or set of conditions indicates a a characteristic or not  
+- In epidemiology and biostatistics, most of our work deals with prediction or associations rather than classification  
+- "When close calls are possible, or when there is inherent randomness to the outcomes, probability estimates are called for." (https://www.fharrell.com/post/classification/)
+
+# Logistic regression
+
+- We can use a logistic regression model to help distinguish between those who have a characteristic and those who do not have a characteristic 
+
+- In this case we are using it as a classifier rather than a model to estimate associations between an exposure and an outcome
+
+- We can evaluate the validity of the model using different measures including sensitivity, specificity, PPV, accuracy, Receiver operating characteristic curves (ROC) and AUC values
+
+
+# Examples
+![Spam email or not?](https://miro.medium.com/max/1840/1*hsyCZOYoGrX6BJsj4Lgrhg.png)
+- opiod misuse or not? https://www.ncbi.nlm.nih.gov/pubmed/31899451
+
+# Let's use logistic regression as a classifier for diabetes in the BRFSS dataset
+```{r, eval=FALSE}
+#install.packages("tidyverse")
+#install.packages("haven")
+#install.packages("ROCR")
+#install.packages("odds.n.ends")
+library(dplyr)
+library(haven)
+library(ROCR)
+library(odds.n.ends)
+library(ggplot2)
+```
+# Load dataset
+```{r, eval=FALSE}
+BRFSS <- read.csv("https://raw.githubusercontent.com/kijohnson/ADA_Spring_2019/master/BRFSS2017_10percent_v2.csv")
+```
+
+
+```{r, eval=FALSE}
+#check type of variable
+class(BRFSS$diabetes)
+
+#look at number of observations per level
+table(BRFSS$diabetes)
+```
+# Let's combine the no's and yes's and exclude "Don't know/Not sure" and "Refused"
+```{r, eval=FALSE}
+#make a binary diabetes variable categorizing diabetes into yes and no excluding individuals with other responses.
+BRFSS$diabetes_binary[
+  BRFSS$diabetes=="No"| BRFSS$diabetes=="No, pre-diabetes or borderline diabetes"]<-0 #Assign 0 to those who responded no or no pre-diabetes/borderline to the diabetes question
+
+BRFSS$diabetes_binary[
+  BRFSS$diabetes=="Yes"|BRFSS$diabetes=="Yes, but female told only during pregnancy"]<-1 #Assign 1 to those who responded yes or yes during pregnancy to the diabetes question
+
+BRFSS$diabetes_binary<-factor(BRFSS$diabetes_binary, levels=c(0,1), labels=c("No Diabetes", "Diabetes"))
+
+#check to make sure re-classification worked
+table(BRFSS$diabetes_binary, BRFSS$diabetes)
+table(BRFSS$diabetes_binary)
+```
+# Let's also recode BMI into 4 categories
+```{r, eval=FALSE}
+#recoding BMI to 4 categories
+BRFSS$bmi_cat[(BRFSS$bmi>0 & BRFSS$bmi<18.5)]<-0
+BRFSS$bmi_cat[(BRFSS$bmi>=18.5 & BRFSS$bmi<25)]<-1
+BRFSS$bmi_cat[(BRFSS$bmi>=25 & BRFSS$bmi<30)]<-2
+BRFSS$bmi_cat[(BRFSS$bmi>=30)]<-3
+
+#make BMI a factor variable
+BRFSS$bmi_cat<-factor(BRFSS$bmi_cat, levels=c(0:3), labels=c("0 to <18.5 kg/m2", "18.5 to <25 kg/m2", "25 to <30 kg/m2", ">=30 kg/m2"))
+
+#checking to make sure recode worked
+summary(BRFSS$bmi_cat)
+by(BRFSS$bmi, BRFSS$bmi_cat, summary)
+```
+# Run a logistic model with diabetes_binary as the dependent variable and bmi_cat as the independent variable
+```{r, eval=FALSE}
+#bmi_cat logistic model
+bmi_catLogit <- glm(diabetes_binary ~bmi_cat, data=BRFSS, family="binomial")
+  summary(bmi_catLogit)
+
+#calculate and print ORs and 95% CIs  
+  ORbmi_cat<-exp(cbind(OR = coef(bmi_catLogit), confint(bmi_catLogit))) 
+  ORbmi_cat #print ORs and 95% CIs
+```
+# Get model predicted probabilities that an observation is a 1 vs. a 0
+```{r, eval=FALSE}
+preds<-predict(bmi_catLogit, newdata=BRFSS, type='response') # to get probabilities, if you don't use it you will get log odds
+
+head(preds)
+
+hist(preds) #the highest predicted probability of having diabetes (a 1) is 0.25. Since the cutoff for classifying something as a 1 in the odds.n.ends package by Dr. Harris is 0.5, we will get 0 predicted cases of diabetes using this model. This model would be terrible at classifying people with diabetes vs. not.
+```
+
+# Make dataset of predicted probabilities and true diabetes label, plot probabilities by diabetes, and get sensitivity and specificity
+```{r, eval=FALSE}
+
+xt<-as.data.frame(preds)
+xt2<-cbind(xt, BRFSS$diabetes_binary)
+
+#plot the distribution of the predicted probabilities for those with and without diabetes
+ggplot(data=xt2) +
+  geom_density(aes(x=preds, color=BRFSS$diabetes_binary, linetype=BRFSS$diabetes_binary))
+
+odds.n.ends(bmi_catLogit) #This function will show us
+```
+# A note on model prediction accuracy
+- Accuracy is akin to % agreement between the model predictions and the true values
+- The accuracy of the above model is (0+35476)/41383=85.7%. It predicts all 0's correctly (100% correct) and all 1's incorrect (0% correct)
+- Therefore, accuracy is not a good measure for the model's performance and logistic doesn't work well as a classifier when the prevalence of the event/outcome is low
+
+
+# What if bmi is treated as a continuous variable? What happens to sensitivity?
+```{r, eval=FALSE}
+bmi_cont_logit <- glm(diabetes_binary ~bmi , data=BRFSS, family="binomial") 
+  summary(bmi_cont_logit)
+  
+preds<-predict(bmi_cont_logit, newdata=BRFSS, type='response') # get predicted probabilities
+hist(preds) # display histogram of predicted probabilities
+
+odds.n.ends(bmi_cont_logit) # look at summary values from model
+```
+# What if we add a few more predictors? What happens to sensitivity?
+```{r, eval=FALSE}
+bmi_cont_logit2 <- glm(diabetes_binary ~bmi + X_AGE80 + sex, data=BRFSS, family="binomial") # add age and sex
+  summary(bmi_cont_logit2)
+  
+preds<-predict(bmi_cont_logit2, newdata=BRFSS, type='response') # get predicted probabilities
+hist(preds) # display histogram of predicted probabilities
+
+odds.n.ends(bmi_cont_logit2) # look at summary values from model and get sensitivity and specificity
+```
+# What happens if we balance the 1s and 0s?
+- Model performance improves with a balanced dependent variable. 
+- We can balance by undersampling the majority class. 
+- Can we predict more 1's at a cutoff for predicted probability of 0.5 the default for odds.n.ends (i.e. increase model sensitivity)?
+```{r, eval=FALSE}
+#create new dataset with diabetes_binary= 0
+set.seed(1)
+BRFSS_zero<-sample_n(BRFSS[which(BRFSS$diabetes_binary=='No Diabetes'),], size=6367,) # sample from non-Diabetes cases 1:1 as cases
+
+BRFSS_one<-BRFSS[which(BRFSS$diabetes_binary=='Diabetes'),] # diabetes cases conly
+BRFSS_balance<- rbind(BRFSS_zero,BRFSS_one) #Combine these datasets by row 
+```
+
+# Run model using new data set
+```{r, eval=FALSE}
+bmi_cont_logit_b <- glm(diabetes_binary ~bmi+ X_AGE80 + sex, data=BRFSS_balance, family="binomial")
+  summary(bmi_cont_logit_b)
+```
+
+```{r, eval=FALSE}
+#get predicted probabilities
+preds<-predict(bmi_cont_logit_b, newdata=BRFSS, type='response')
+hist(preds)
+odds.n.ends(bmi_cont_logit_b)
+
+#create dataset with predicted probabilities and diabetes labels (true values)
+xt<-as.data.frame(preds)
+xt2<-cbind(xt, BRFSS$diabetes_binary)
+
+#plot distribution of predicted probabilities for diabetes and no diabetes
+ggplot(data=xt2) +
+  geom_density(aes(x=preds, color=BRFSS$diabetes_binary, linetype=BRFSS$diabetes_binary))
+```
+# Receiver operating characteristic curves   
+- ROC curves plot the true positive rate (aka sensitivity and recall) against the false positive rate (1-specificity) across predictive probability thresholds for classifying an observation as a 0 or a 1  
+- ROC curves give possible trade-offs between sensitivity and specificity for the logistic regression classifier  
+- We can use ROC curves to determine the threshold for the highest sensitivity and lowest false positive rate for the model  
+
+# ROC curve
+![](https://scikit-learn.org/stable/_images/sphx_glr_plot_roc_001.png)
+
+
+# Thresholds
+- If we are using logistic regression as a classifier (training a model to have optimal validity (sensitivity and specificity) and then applying it to a test set for classifying observations with *unknown true values*, we can set a threshold for what predicted probabilities will classify someone as a 1 vs. a 0 (e.g. diabetes vs. no diabetes)
+
+- The blue dashed line in the ROC curve figure is for different threshold values (predicted probabilities for classifying an observation as having the characteristic). Thresholds range range from 1 in the lower left corner (100% specific) to 0 in the upper right corner (100% sensitive)
+
+#  Plotting ROC curves--we use functions in the ROCR package 
+```{r, eval=FALSE}
+preds<-predict(bmi_cont_logit_b, newdata=BRFSS_balance, type='response') #get predicted probabilities from the model (bmi_catLogitb) and the actual values for diabetes from the BRFSS_balance dataset
+
+ROCR=prediction(as.numeric(preds), as.numeric(BRFSS_balance$diabetes_binary)) #predicted probs, values of dependent variable. *Note need as.numeric specification for below
+
+perf=performance(ROCR,"tpr", "fpr") # trp is what to plot on y axis and fpr is what to plot on x axis
+plot(perf, colorsize=T, color="red", print.cutoffs.at=seq(0,1,0.1))
+abline(a=0, b= 1)
+```
+# How do we obtain the threshold value from the curve with the highest sensitivity and specificity?
+```{r, eval=FALSE}
+ss <- performance(ROCR, "sens", "spec")
+plot(ss)
+ssval<-ss@alpha.values[[1]][which.max(ss@x.values[[1]]+ss@y.values[[1]])]
+ssval
+```
+# Set threshold at 0.5071659 and get "confusion matrix" (just a two by two table)
+```{r, eval=FALSE}
+t=0.5071659
+pred_class=ifelse(preds>t, 'Diabetes','No Diabetes')
+addmargins(table(pred_class=pred_class,observed=BRFSS_balance$diabetes_binary))
+
+```
+
+```{r, eval=FALSE}
+sensitivity=4147/(5907) #also known as recall
+sensitivity
+ 
+specificity=3866/(5859)
+specificity
+
+PPV=4147/(6140) #also known as precision
+PPV
+
+accuracy=(4147+3866)/(11766)
+accuracy
+```
+# Area under the ROC curve (AUC)
+- AUC tells us how good our model is at distinguishing between classes
+- It tells us the probability that a randomly chosen true positive case will be ranked higher than a randomly chosen negative case
+- The higher the AUC, the better it is at predicting 1's (or determining patients with diabetes vs. without diabetes)
+- An AUC of 0.5 means you could just as well flip a coin to determine who has diabetes and who does not
+![AUC=1](AUC1.png)
+![AUC=0.7](AUCpt7.png)
+![AUC=0.5](AUCpt5.png)
+
+# To get the AUC we can use the performance function
+```{r, eval=FALSE}
+auc.perf = performance(ROCR, measure = "auc")
+auc.perf@y.values
+```
+
+# What happens to our AUC if we add income to our model?
+```{r, eval=FALSE}
+bmi_cont_logitc <- glm(diabetes_binary ~bmi + X_AGE80 + sex + income, data=BRFSS_balance, family="binomial")
+  summary(bmi_cont_logitc)
+
+preds<-predict(bmi_cont_logitc, newdata=BRFSS_balance, type='response')
+ROCR=prediction(as.numeric(preds),  as.numeric(BRFSS_balance$diabetes_binary)) #predicted probs, values of dependent variable
+
+auc.perf = performance(ROCR, measure = "auc")
+auc.perf@y.values
+```
+
+# Limitations of using logistic as a classifier
+- Many problems in public health are multifactorial and rare leading to unbalanced samples (where classification requires balancing to perform at acceptable levels of sensitivity and specificity)
+- Training a model using an artificially balanced sample may not be generalizable to a test set 
+- Difficult to predict whether something is or is not when risk factors are weak--better to use logistic regression to estimate risk or the probability of developing an outcome
+
+# Refs
+https://www.r-bloggers.com/a-small-introduction-to-the-rocr-package/
+https://www.youtube.com/watch?v=7eHumx3-xR0
+https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5
+https://en.wikipedia.org/wiki/Receiver_operating_characteristic
+https://www.knime.com/blog/correcting-predicted-class-probabilities-in-imbalanced-datasets
+https://www.fharrell.com/post/classification/
+
+
+
+
+
+
+
+
+
+
+

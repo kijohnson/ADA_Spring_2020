@@ -1,0 +1,285 @@
+---
+title: "ALM Refresher"
+author: "Kyle A. Pitzer"
+date: "2/12/2020"
+output:
+  powerpoint_presentation:
+    reference_doc: template.pptx
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Learning Objectives
+
+1. Refresh linear modeling foundations and concepts
+2. Introduce students to linear modeling in R for those who have not done it
+3. Conduct linear regression analysis independently
+4. Interpret results of a linear model
+
+---
+
+# The Linear Model
+
+- Linear models can be used to predict or explain a *continuous* outcome using a single or several independent/predictor variables.
+
+- The linear model can be written in several different ways.
+    - y = mx + b
+    - y = $b_0$ + $b_1x$
+    - y = $a$ + $b_1x$ 
+
+- The critical elements of each equation are the outcome variable, the intercept, slope, and the predictor variable.
+
+---
+
+```{r echo=FALSE, results='hide', message=FALSE}
+#installing the package
+#install.packages("statsr")
+#loading the package and data
+library(statsr)
+data("brfss")
+
+#looking at data
+summary(brfss)
+```
+
+# Example: Fruit consumption and weight
+
+- For this example, we will walk through each step of linear modeling using the brfss excerpt from the "statsr" package.
+
+- Specifically, we will be looking at the effect of fruit consumption on weight.
+
+- Using our variables, our simple model looks like this:
+    - weight = $b_0$ + $b_1$fruitconsumption
+    - where weight is our outcome and fruit consumption is our predictor of interest.
+
+---
+
+# Visualizing the relationship
+
+- Before we run our model, we can visualize the relationship between fruit consumption and weight.
+
+```{r eval = FALSE}
+#plot the relationship between fruit consumption and weight
+ggplot(brfss, aes(y = weight, x = fruit_per_day)) + 
+  geom_smooth(method = "lm", se = FALSE, na.rm = T) +
+  geom_jitter(na.rm = T) +
+  geom_point(na.rm = T, size = 2, alpha = .2) + 
+  labs(title = "Fruit Consumption and Weight",
+       y = "Weight (lbs)",
+       x = "Fruit Consumption (per day)") +
+  theme_bw()
+```
+---
+
+```{r echo = FALSE, message = FALSE}
+#load tidyverse
+library(tidyverse)
+
+#plot the relationship between weight and fruit consumption
+ggplot(brfss, aes(y = weight, x = fruit_per_day)) + 
+  geom_smooth(method = "lm", se = FALSE, na.rm = T) +
+  geom_jitter(na.rm = T) +
+  geom_point(na.rm = T, size = 2, alpha = .2) + 
+  labs(title = "Fruit Consumption and Weight",
+       y = "Weight (lbs)",
+       x = "Fruit Consumption (per day)") +
+  theme_bw()
+```
+
+- The relationship appears to be slightly negative between fruit consumption and weight.
+
+---
+
+# Modeling our Data
+
+- In order to model our data, we use the lm() function, which stands for linear model.
+
+- For our linear model, our outcome is weight and our predictor of interest is fruit consumption per day.
+
+- Our model looks like this in R:
+
+```{r}
+weight.mod <- lm(weight ~ fruit_per_day, data = brfss)
+```
+
+---
+
+# Examining our results
+
+- In order to see our results, we have to wrap summary() around our model object.
+
+```{r}
+summary(weight.mod)
+```
+- It looks like our prediction based on the visualization was correct.
+
+---
+
+# Multivariate linear model
+
+- Next, let's add a few confounders to our model - sex, height, and exercise.
+
+- The model now looks like this:
+
+- Our model looks like this in R:
+
+```{r}
+weight.mod2 <- lm(weight ~ fruit_per_day + sex + height + exercise, data = brfss)
+```
+
+---
+
+# Results of multivariate model
+
+- Now we can use summary() again to look at our multivariate model.
+
+```{r}
+summary(weight.mod2)
+```
+
+- Now it looks like fruit consumption isn't as explanatory as we thought.
+
+- We can now fill in our linear model as follows: weight = -160 + -0.2(fruit consumption) + -7.3(sex) + 5.02(height) + 12.11(exercise)
+
+---
+
+# Evaluating estimates
+
+- Given the p value, we can make conclusions about whether we reject or fail to reject the null (slope = 0).
+
+- We can also get confidence intervals using confint()
+
+```{r}
+confint(weight.mod2)
+```
+
+- This tells us the range of possible values in the population.
+
+---
+
+# Interpreting estimates
+
+- For continous variables, such as height, we would interpret this as the change in weight given a 1 unit increase in height.
+
+- For categorical variables, such as exercise, this is the change in weight for someone who does exercise compared to someone who does not.
+
+- Understanding these interpretations is also useful for case prediction based on specified values.
+
+---
+
+# Evaluating the model
+
+- There are two primary things to look at when evaluating model fit: the F statistic and adjusted R squared.
+
+- The F statistics and accompanying p value tells us whether the model is better than the mean/null model at explaining variation in the outcome. When the p value is less than .05, that means that we can reject the null that the model is the same as the null model in terms of its ability to explain the outcome.
+
+- The R squared tells us how much of the variation (%) is explained by the model. For instance, in our model, the adjusted R squared is .31, therefore the model explains 31% of the variation in weight.
+
+---
+
+# Assumptions
+
+- There are four assumptions that need to be fulfilled in order to generalize our model to the population.
+
+- First, there needs to be a linear relationship between predicted values and residuals.
+
+- Second, there must be independence of residuals.
+
+- Third, residuals need to be distributed normally
+
+- Lastly, there needs to be equal variance of residuals.
+
+---
+```{r echo= FALSE, results = 'hide'}
+brfss$predicted <- predict(weight.mod2)
+brfss$residuals <- residuals(weight.mod2)
+```
+# Checking linearity
+
+- In order to check linearity, we can look at a scatterplot for predicted weight and residuals.
+
+```{r error = FALSE, message = FALSE, warning =  FALSE, eval = FALSE}
+# check linearity of plot of residuals and predicted values 
+ggplot(brfss, aes(y = residuals, x = predicted)) + 
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(se = FALSE) +
+  geom_point(size = 2, alpha = .2) + 
+  labs(y = "Residuals (unexplained variability)",
+       x = "Predicted weight") + theme_bw() + 
+  ggtitle("Residuals and predicted values")
+```
+---
+
+```{r error = FALSE, message = FALSE, warning =  FALSE, echo=FALSE}
+# check linearity of plot of residuals and predicted values 
+ggplot(brfss, aes(y = residuals, x = predicted)) + 
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(se = FALSE) +
+  geom_point(size = 2, alpha = .2) + 
+  labs(y = "Residuals (unexplained variability)",
+       x = "Predicted weight") + theme_bw() + 
+  ggtitle("Residuals and predicted values")
+```
+
+---
+
+# Checking indepedence
+
+- Next, we can check independence using the Durbin-Watson test, in which the null hypothesis is that the residuals ARE independent.
+
+```{r message=FALSE, echo=FALSE}
+#install.packages("lmtest")
+# test the residuals for independence 
+library(lmtest)
+```
+
+```{r}
+#check residuals for independence
+dwtest(weight.mod2)
+```
+---
+
+# Checking normality
+
+- We can check normality of residuals using the Shapiro-Wilk test, in which the null hypothesis is that the residuals ARE normally distributed.
+
+```{r}
+# check normality statistically with the Shapiro-Wilk test
+shapiro.test(brfss$residuals)
+```
+
+---
+
+# Checking homoscedasticity
+
+- Lastly, we can use the Breusch-Pagan test to see whether our residuals have constant variance. In this test, the null hypothesis is that variance IS constant.
+
+```{r echo = TRUE}
+# check homoscedasticity with bp test
+bptest(weight.mod2)
+```
+
+---
+
+# What to do when failing assumptions
+
+- Report results with generalizing to the population
+- Re-specify the model with different (BUT APPROPRIATE) variables
+- Transform variables
+
+---
+
+# In-class Activity
+
+- Use the data for North Carolina births (nc) in the statsr package to follow the procedure described in today's lecture
+
+- See https://cran.r-project.org/web/packages/statsr/statsr.pdf for information about the data set.
+
+- Choose 1 outcome and at least 2 predictors
+
+- Document your procedures and report your results in the same Rmd, and submit for participation points
+
+---

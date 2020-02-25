@@ -1,0 +1,185 @@
+---
+title: "R Markdown Workshop"
+author: "Kyle A. Pitzer"
+date: "1/20/2020"
+output: html_document
+---
+
+Above is the YAML. This section gives R information about knitting the document. Usually, you don't want to modify this because it can keep R from knitting your document. There are cases where you might want to edit this in order to knit to a particular format such as a poster or slideshow.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The first chunk is the global options chunk. Here you can set global options for the whole Rmd rather than chunk by chunk, although these options can be overridden by specific chunk options. We only have one global option, which is "echo=TRUE". This just means that code will be shown in our R markdown file. We will change this in a chunk later.
+
+R Markdown functions similarly to any word processor with specific notations for different formatting options. You can create headers within your markdown file for distinct sections. There are three levels of headers, which you can specify with #, ##, and ###, for first level, second level, and third level header all the way through a level 6 header. You can also created bolded or italicized words using asterisks - **bold** or *italicized*- around the words. In this workshop, we are going to produce a formatted research report using the BRFSS data from class.
+
+## Our Data
+
+Aside from regular text, each Rmd has code chunks where we can write our code and print our output inline. Let's load our data first. We are actually going to hide this code using "echo=FALSE" because in our report, we don't need to show ourselves importing the data. Although we want to hide us loading the data, we might want to show a summary of the data, so we won't set any chunk options related to the output.
+
+```{r, echo=FALSE}
+#load the data
+brfss <- read.csv("brfss.csv")
+
+#look at the data
+summary(brfss)
+```
+
+Next, we might want to clean our data. We definitely do not want to show that, or any output we need to check in the report, so we will use the options "echo=FALSE", and "results='hide'". We also need to use "message=FALSE" in the chunk where we load the tidyverse package to hide all of the messages that occur when we load tidyverse.
+
+```{r, echo=FALSE, results='hide'}
+#check class of health plan variable
+class(brfss$HLTHPLN1)
+
+#change health plan to a factor
+brfss$HLTHPLN1 <- as.factor(brfss$HLTHPLN1)
+
+#check the change
+class(brfss$HLTHPLN1)
+
+#look at the variable
+summary(brfss$HLTHPLN1)
+```
+
+```{r echo=FALSE, results='hide'}
+#check class of income variable
+class(brfss$X_INCOMG)
+
+#change income groups to a factor
+brfss$X_INCOMG <- as.factor(brfss$X_INCOMG)
+
+#check the change
+class(brfss$X_INCOMG)
+
+#look at the variable
+summary(brfss$X_INCOMG)
+```
+
+```{r echo=FALSE, results='hide', message=FALSE}
+#load the package
+library(tidyverse)
+
+#recode our health plan variable
+brfss$HLTHPLN1 <- recode(brfss$HLTHPLN1,
+                         '1' = "Yes",
+                         '2' = "No",
+                         '7' = NA_character_,
+                         '9' = NA_character_)
+
+#check our work
+summary(brfss$HLTHPLN1)
+```
+
+```{r echo=FALSE, results='hide'}
+#recode income groups
+brfss$X_INCOMG <- recode(brfss$X_INCOMG,
+                          '1' = "Less than 15,000",
+                          '2' = "15,000 to 25,000",
+                          '3' = "25,000 to 35,000",
+                          '4' = "35,000 to 50,000",
+                          '5' = "50,000 or more",
+                          '9' = NA_character_) 
+
+#check our work
+summary(brfss$X_INCOMG)
+```
+
+```{r echo=FALSE, results='hide'}
+#recode our physical health variable
+brfss$PHYSHLTH <- recode(brfss$PHYSHLTH,
+                         '88' = 0L,
+                         '77' = NA_integer_,
+                         '99' = NA_integer_)
+
+#check our work
+summary(brfss$PHYSHLTH)
+```
+
+```{r echo=FALSE, results='hide'}
+#change physical health to numeric
+brfss$PHYSHLTH <- as.numeric(brfss$PHYSHLTH)
+
+#check the change
+class(brfss$PHYSHLTH)
+```
+
+```{r echo=FALSE, results='hide'}
+#check class of income variable
+class(brfss$X_AGE80)
+
+#change income groups to a factor
+brfss$X_AGE80 <- as.numeric(brfss$X_AGE80)
+
+#check the change
+class(brfss$X_AGE80)
+
+#look at the variable
+summary(brfss$X_AGE80)
+```
+Perhaps after we do our cleaning, we want to show our summary again to show the changes we made in a few of the variables. Let's also take a random sample so our functions will run faster and our plot will look better. Taking a random sample will also show the differences when we print parameters inline with the text.
+```{r echo=FALSE}
+#check in summary
+summary(brfss)
+
+#take random sample
+brfss500 <- sample_n(brfss, 500)
+```
+
+## Plotting
+
+Next, let's embed a scatterplot with a line, but hide the code. First, let's say we want to take a look at the scatterplot, but we only want to show the final scatter plot with the lm line. Here we want to use echo=FALSE, warning=FALSE, and fig.show='hide'. We need to use warning=FALSE because we get a warning about missing data with ggplot. Notice that option (fig.show='hide') for displaying plot output is different from that for regular output ("results='hide'). When we show the plot, we might also want to show the code for reference, so the only option we need to include is warning=FALSE to hide the message about missing data.
+```{r echo=FALSE, warning=FALSE, fig.show='hide'}
+ggplot(data = brfss500, (aes(y = PHYSHLTH, x = X_AGE80))) + 
+  geom_point(size = .5) + 
+  labs(y = "Physically unhealthy days",
+       x = "Age") +
+  theme_bw() +
+  ylim(0, 50) +
+  xlim(0, 100) +
+  ggtitle("Physically unhealthy days and age")
+```
+```{r warning=FALSE}
+ggplot(data=brfss500, aes(y = PHYSHLTH, x = X_AGE80)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point(size = .5, position = "jitter") + 
+  labs(y = "Physically unhealthy days",
+       x = "Age") +
+  theme_bw() +
+  ylim(0, 50) +
+  xlim(0, 100) +
+  ggtitle("Physically unhealthy days and age")
+```
+
+## Running a Model and Reporting Results
+
+Next, let's do a multivariate linear model (don't worry about assumptions that might be violated) and share our results. Let's hide our code, but show our model summary and a nice table.
+```{r echo=FALSE, message = FALSE}
+#load packages for table
+library(kableExtra)
+library(broom)
+#run the model
+health.mod <- lm(PHYSHLTH ~ X_AGE80 + X_INCOMG + relevel(HLTHPLN1, ref = "No"), data = brfss500)
+
+#look at the results
+summary(health.mod)
+
+#print table
+kable(tidy(health.mod), digits = 3)
+```
+
+
+While we can show the output. We can also report our results and bring parameters from the output in automatically using inline r code, such as the coefficient and standard error for people making greater than 50,000 dollars per year. We found that people making more than 50,000 dollars per year had less physically unhealthy days, b=
+`r round(summary(health.mod)$coef[6, 1], digits = 3)`(`r round(summary(health.mod)$coef[6, 2], digits = 3)`). This tells R to pull the content from row 6, column 1 and 2 in our health.mod output into the text and round it to three decimals. That way if we need to rerun our model because perhaps there was a mistake with the data, we don't have to modify the text.
+
+Now we have a pretty nice report - let's knit it using the Knit button! We can knit to either html or word document. The pdf knit requires an additional typesetting program called LaTeX.
+
+## Other Resources
+
+This workshop has shown many of the common formatting notations and chunk options you will typically use in Markdown for your work, but I'm sure you can imagine there are many other options. For a good resource you can check out [R Markdown Guide](https://rmarkdown.rstudio.com/lesson-1.html) or [R Markdown Cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf). 
+
+You can also insert pictures, so I leave you with this!
+
+![Use R Markdown!](puppies.jpg)
+

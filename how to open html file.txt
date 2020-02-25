@@ -1,0 +1,5 @@
+To open an html file use the following in front of the raw web link (obtained by  clicking on raw after you click on the html file you want):
+htmlpreview.github.io/?
+
+For example, for HW5 in the class 5 folder
+http://htmlpreview.github.io/?https://raw.githubusercontent.com/kijohnson/ADA_Spring_2020/master/Class%206/Class_6_demo_021820.html

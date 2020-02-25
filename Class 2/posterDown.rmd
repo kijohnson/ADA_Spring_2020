@@ -1,0 +1,158 @@
+---
+title: Using RMarkdown to Generate Reproducible Conference Posters
+author:
+  - name: Laura Brugger
+    affil: 1
+  - name: Another Author
+    affil: 2
+affiliation:
+  - num: 1
+    address: Department of Sociology & Anthropology, Saint Louis University
+  - num: 2
+    address: Brown School of Social Work, Washington University in Saint Louis
+column_numbers: 4
+logoright_name: https&#58;//raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png
+logoleft_name: https&#58;//raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png
+output: 
+  posterdown::posterdown_html:
+    self_contained: false
+bibliography: packages.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# 1 Introduction
+
+Welcome to `posterdown` ! `Posterdown` was developed by Brent Thorne (2019) from Brock University to facilitate the smooth production of reproducible conference posters using R Markdown! Most of the things you can do in RMarkdown are available here including section notation, figure captioning, and even citations like this one [@R-rmarkdown]. 
+
+The rest of this example poster will show how you can insert typical conference poster features into your own document. 
+
+## 1.1 Study Site
+You can make subheadings just like you do for normal .rmd reports. You can use all the same markdown syntax for formatting as well for example, to *italicize* or **bold** your text. You can also insert images: 
+
+<center>
+<img src = "hawaii.jpg" width = 800>
+<center>
+*Southeastern Hawaiian Islands with Bathymetry and Lava Flows*
+
+## 1.2 Objectives
+
+You can make bulleted or numbered lists as usual, for example, to describe some of the key objectives of `posterdown`: 
+
+1. Easy to use reproducible poster design. 
+2. Integration with R Markdown.
+3. Easy transition from `posterdown` to `pagedown` report or manuscript documents [@R-pagedown].
+
+# 2 Methods
+
+This package uses the same workflow approach as the R Markdown you know and love. Basically it goes from RMarkdown > Knitr > Markdown > Pandoc > HTML/CSS > PDF. You can even use the bibliography the same way [@R-posterdown].
+
+
+## Available Templates
+
+1. `posterdown_html`
+2. `posterdown_betterland`
+3. `posterdownbetterport`
+
+This template is the `posterdown_html` which generates a "classic" scientific conference poster. You can switch templates by simply switching the YAML information. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam placerat augue at velit tincidunt semper. Donec elementum porta posuere. Nullam interdum, odio at tincidunt feugiat, turpis nisi blandit eros, eu posuere risus felis non quam. Nam eget lorem odio. Duis et aliquet orci. Phasellus nec viverra est.
+
+# 3 Results
+
+Here's where we want to display all of the important results that we've produced. In `posterdown` this is super easy and we can use the `kable` table formatting that we already use for normal lab work!
+
+You can reference tables like this: Table \@ref(tab:mytable). 
+
+```{r mytable, out.width='80%'}
+Volcano <- c('Erta Ale', 'Ambrym', 'Mount Yasur', 'Mount Erebus', 'Kilauea', 'Nyiragongo', 'Masaya')
+Location <- c('Ethiopia','Vanuatu','Vanuatu','Antarctica','United States', 'DRC','Nicaragua')
+Elevation <- c(2011, 4377, 1184, 12448, 4091, 11385, 2083)
+Last.Eruption <- c('2017', '2018', '2019', '2019', '2018', '2019', '2019')
+Lava.Height <- c(98,200,328,263,60, 80, 150)
+volcData <- data.frame(Volcano, Location, Elevation, Last.Eruption, Lava.Height)
+
+knitr::kable(volcData[1:7, 1:4], caption = 'Volcanoes with Persistent Lava Lakes.',align = 'c',"html")
+```
+
+Or with figures: Figure \@ref(fig:standard-plot), or Figure \@ref(fig:morefigs).
+
+```{r out.width='80%', fig.align='center', fig.cap='Great figure!', fig.height=5}
+library(ggplot2)
+
+volcano <- c('Erta Ale', 'Ambrym', 'Mount Yasur', 'Mount Erebus', 'Kilauea', 'Nyiragongo', 'Masaya')
+location <- c('Ethiopia','Vanuatu','Vanuatu','Antarctica','United States', 'Democratic Republic of the Congo','Nicaragua')
+elevation <- c(2011, 4377, 1184, 12448, 4091, 11385, 2083)
+eruption <- c('2017', '2018', '2019', '2019', '2018', '2019', '2019')
+eruptionHeight <- c(98,200,328,263,60, 80, 150)
+
+volcData <- data.frame(volcano, location, elevation, eruption, eruptionHeight)
+
+ggplot(data=volcData, aes(x=volcano, y=elevation, fill=volcano)) +
+  geom_bar(stat="identity") + 
+  ggtitle("Elevation of Volcanoes with Active Lava Lakes", subtitle="A PosterDown Example") + 
+  ylab("Elevation (in feet)") + 
+  xlab ("Volcano") + 
+  theme(legend.position = "none")
+```
+
+```{r standard-plot, out.width='80%', fig.align='center', fig.cap='Great figure!', fig.height=5}
+plot(mtcars[1:2])
+```
+
+```{r morefigs, out.width='80%', echo=TRUE, fig.cap='Amazing, right?!', fig.height=5}
+data <- iris
+
+plot(x = data$Sepal.Length, 
+     y = data$Sepal.Width, 
+     col = data$Species,
+     pch = 19, 
+     xlab = "Sepal Length (cm)",
+     ylab = "Sepal Width (cm)")
+
+```
+
+
+
+
+You can also add white space by starting a new line with a forward slash \ like this! 
+\
+\
+\
+
+
+# 4 Next Steps
+
+Let's try to make our first poster. First thing to do: 
+
+1. `install.packages("posterdown")`
+2. Create a new R Markdown file
+3. Edit your YAML output such that `output: posterdown:: posterdown_html`
+4. Clone and paste my .rmd file into yours (github.com/laurabrugger)
+5. Explore various formatting options
+6. Try changing your YAML to the other two templates 
+
+Some other fun things to explore later: 
+
+* specify poster size
+* change color scheme
+* change font family
+* animate figures for .html output (useful for mapping change over time)
+* poster formatting ideas
+
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam placerat augue at velit tincidunt semper. Donec elementum porta posuere. Nullam interdum, odio at tincidunt feugiat, turpis nisi blandit eros, eu posuere risus felis non quam. Nam eget lorem odio. Duis et aliquet orci. Phasellus nec viverra est.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam placerat augue at velit tincidunt semper. Donec elementum porta posuere. Nullam interdum, odio at tincidunt feugiat, turpis nisi blandit eros, eu posuere risus felis non quam. Nam eget lorem odio. Duis et aliquet orci. Phasellus nec viverra est.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam placerat augue at velit tincidunt semper. Donec elementum porta posuere. Nullam interdum, odio at tincidunt feugiat, turpis nisi blandit eros, eu posuere risus felis non quam. 
+
+# 5 Conclusion
+
+Try `posterdown` out and never use powerpoint again!
+
+<center>
+<img src = "volcano.jpg" width = 500>
+<center>
+
+```{r, include=FALSE}
+knitr::write_bib(c('knitr','rmarkdown','posterdown','pagedown'), 'packages.bib')
+```
+
+# References

@@ -1,0 +1,299 @@
+Drink	Category	_Calories	_Fat__g_	_Carb___g_	_Fiber__g_	_Protein__g_
+Blonde Roast	Freshly Brewed Coffee	5	0	0	0	1
+Brown Sugar Shortbread Creme Frappuccino®	Frappuccino® Blended Beverages					
+Brown Sugar Shortbread Crème	Kids  Drinks & Others	290	9	44	0	9
+Brown Sugar Shortbread Frappuccino®	Frappuccino® Blended Beverages					
+Brown Sugar Shortbread Latte	Starbucks Espresso Beverages	380	11	57	0	12
+Brown Sugar Shortbread Light Frappuccino®	Frappuccino® Blended Beverages					
+Caffè Americano	Starbucks Espresso Beverages					
+Caffè Latte	Starbucks Espresso Beverages	190	7	19	0	13
+Caffè Misto	Freshly Brewed Coffee					
+Caffè Mocha	Chocolate Beverages	290	8	42	4	13
+Caffè Mocha	Starbucks Espresso Beverages	290	8	42	4	13
+Caffè Vanilla Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Caffè Vanilla Light Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Cappuccino	Starbucks Espresso Beverages	120	4	12	0	8
+Caramel Brulée Crème Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Caramel Brulée Frappuccino® Blended Beverage	Frappuccino® Blended Beverages	300	3.5	63	0	6
+Caramel Brulée Latte	Starbucks Espresso Beverages	360	6	66	0	12
+Caramel Brulée Light Frappuccino® Blended Beverage	Frappuccino® Blended Beverages	180	1	39	3	6
+Caramel Brulée Steamer	Kids  Drinks & Others	290	5	50	0	10
+Caramel Cocoa Cluster Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Caramel Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Caramel Light Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Caramel Macchiato	Starbucks Espresso Beverages	250	7	35	0	10
+Chai Crème Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Chai Eggnog Latte	Lattes and Teas					
+Chai Latte	Lattes and Teas					
+Chestnut Praline Chai Tea Latte	Lattes and Teas					
+Chestnut Praline Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Chestnut Praline Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Chestnut Praline Latte	Starbucks Espresso Beverages	260	6	39	0	11
+Chestnut Praline Light Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Chocolate Smoothie	Chocolate Beverages	320	5	53	8	20
+Chocolate Smoothie	Smoothies	320	5	53	8	20
+Christmas Tree Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Christmas Tree Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Cinnamon Dolce Crème	Kids  Drinks & Others	200	6	28	0	10
+Cinnamon Dolce Frappuccino® Blended Coffee	Frappuccino® Blended Beverages	260	3	52	0	5
+Cinnamon Dolce Latte	Starbucks Espresso Beverages	270	7	41	0	11
+Cinnamon Dolce Light Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Cinnamon Roll Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Clover® Brewed Coffee	Freshly Brewed Coffee	10	0	0	0	1
+Coffee Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Coffee Light Frappuccino® Blended Coffee	Frappuccino® Blended Beverages	110	0	24	0	3
+Coffee Traveler	Freshly Brewed Coffee					
+"Cool Lime Starbucks Refreshers""! Beverage"	"Starbucks Refreshers""! Beverages"	45	0	11	0	0
+Cupcake Crème Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Dark Mocha Crème Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Dark Mocha Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Dark Mocha Light Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Decaf Pike Place® Roast	Freshly Brewed Coffee	5	0	0	0	1
+Double Chocolaty Chip Crème Frappuccino® Blended Crème	Frappuccino® Blended Beverages	270	6	51	3	5
+Eggnog Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Eggnog Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Eggnog Latte	Starbucks Espresso Beverages	470	20	57	1	17
+Eggnog Light Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Eggnog Steamer	Kids  Drinks & Others	400	18	48	1	14
+Emperor's Cloud and Mist® Green Tea	Lattes and Teas					
+Espresso	Starbucks Espresso Beverages					
+Espresso Con Panna	Starbucks Espresso Beverages					
+Espresso Macchiato	Starbucks Espresso Beverages					
+"Evolution Fresh""!"	"Starbucks Refreshers""! Beverages"					
+"Evolution Fresh""! Cold-Pressed Apple Berry Juice"	"Starbucks Refreshers""! Beverages"					
+"Evolution Fresh""! Orange Juice"	"Starbucks Refreshers""! Beverages"					
+"Evolution Fresh""! Organic Ginger Limeade"	"Starbucks Refreshers""! Beverages"	110	0	28	0	0
+"Evolution Fresh""! Super Green"	"Starbucks Refreshers""! Beverages"	130	0	31	0	1
+"Evolution Fresh""! Sweet Greens and Lemon"	"Starbucks Refreshers""! Beverages"	100	0	22	0	2
+Featured Dark Roast	Freshly Brewed Coffee	5	0	0	0	1
+Flat White	Starbucks Espresso Beverages	180	7	18	0	12
+Ginger Ale	"Fizzio""! Handcrafted Sodas"					
+Gingerbread Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Gingerbread Latte	Starbucks Espresso Beverages	260	7	38	0	11
+Gingerbread Light Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Gingerbread Steamer	Kids  Drinks & Others	200	6	29	0	9
+Green Tea Crème Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Green Tea Latte	Lattes and Teas					
+Holiday Spice Flat White	Starbucks Espresso Beverages	240	7	32	0	12
+Honey Citrus Mint Tea	Lattes and Teas					
+Horchata Almondmilk Crème Frappuccino®	Frappuccino® Blended Beverages					
+Horchata Almondmilk Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Hot Chocolate	Chocolate Beverages	320	9	47	4	14
+Iced Brown Sugar Shortbread Latte	Starbucks Espresso Beverages	320	9	52	0	8
+Iced Caffè Americano	Starbucks Espresso Beverages					
+Iced Caffè Latte	Starbucks Espresso Beverages	130	4.5	13	0	8
+Iced Caffè Mocha	Starbucks Espresso Beverages	230	6	36	4	9
+Iced Caramel Brulée Latte	Starbucks Espresso Beverages	300	3.5	60	0	8
+Iced Caramel Macchiato	Starbucks Espresso Beverages	250	7	37	0	10
+Iced Chai Eggnog Latte	Lattes and Teas					
+Iced Chai Latte	Lattes and Teas					
+Iced Chestnut Praline Chai Tea Latte	Lattes and Teas					
+Iced Chestnut Praline Latte	Starbucks Espresso Beverages	200	4	33	0	7
+Iced Cinnamon Dolce Latte	Starbucks Espresso Beverages	210	4	36	0	8
+Iced Coffee	Cold Brew and Iced Coffee	0	0	0	0	0
+Iced Coffee	Freshly Brewed Coffee	5	0	0	0	0
+Iced Coffee with Milk	Cold Brew and Iced Coffee					
+Iced Coffee with Milk	Freshly Brewed Coffee					
+Iced Eggnog Latte	Starbucks Espresso Beverages	310	13	37	0	11
+Iced Espresso Classics  - Vanilla Latte	Cold Brew and Iced Coffee	130	2.5	21	0	5
+Iced Espresso Classics  - Vanilla Latte	Bottled Drinks	130	2.5	21	0	5
+Iced Espresso Classics - Caffe Mocha	Cold Brew and Iced Coffee	140	2.5	23	0	5
+Iced Espresso Classics - Caffe Mocha	Bottled Drinks	140	2.5	23	0	5
+Iced Espresso Classics - Caramel Macchiato	Cold Brew and Iced Coffee	130	2.5	21	0	5
+Iced Espresso Classics - Caramel Macchiato	Bottled Drinks	130	2.5	21	0	5
+Iced Espresso Classics - Skinny Caramel Macchiato	Bottled Drinks					
+Iced Espresso Classics - Skinny Vanilla Latte	Bottled Drinks	70	0	10	1	6
+Iced Gingerbread Latte	Starbucks Espresso Beverages	200	4	32	0	8
+Iced Green Tea Latte	Lattes and Teas					
+Iced Latte Macchiato	Starbucks Espresso Beverages	130	4.5	13	0	8
+Iced Lightly Sweet Chai Latte	Lattes and Teas					
+Iced Peppermint Mocha	Starbucks Espresso Beverages	290	5	54	4	8
+Iced Peppermint White Chocolate Mocha	Starbucks Espresso Beverages	360	8	65	0	9
+Iced Pumpkin Spice Chai Latte	Starbucks Espresso Beverages	270	3.5	52	0	8
+Iced Pumpkin Spice Latte	Starbucks Espresso Beverages	250	4	45	0	10
+Iced Salted Caramel Mocha	Starbucks Espresso Beverages	300	6	55	4	8
+Iced Skinny Cinnamon Dolce Latte	Starbucks Espresso Beverages					
+Iced Skinny Mocha	Starbucks Espresso Beverages					
+Iced Teavana® London Fog Tea Latte	Lattes and Teas					
+Iced Toasted White Chocolate Mocha	Starbucks Espresso Beverages	280	5	49	0	9
+Iced Vanilla Latte	Starbucks Espresso Beverages	190	4	30	0	7
+Iced White Chocolate Mocha	Starbucks Espresso Beverages	300	8	47	0	10
+Jade Citrus Mint Green Tea	Lattes and Teas					
+Java Chip Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Java Chip Light Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Latte Macchiato	Starbucks Espresso Beverages	190	7	19	0	12
+Lemon Ale	"Fizzio""! Handcrafted Sodas"					
+Lemon Bar Crème Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Lightly Sweet Chai Tea Latte	Lattes and Teas					
+Matcha Lemonade	Lattes and Teas					
+"Mint Majesty""! Herbal Tea"	Lattes and Teas					
+Mocha Frappuccino® Blended Coffee	Frappuccino® Blended Beverages	280	2.5	60	2	4
+Mocha Light Frappuccino® Blended Coffee	Frappuccino® Blended Beverages	140	0.5	28	1	4
+Nariño 70 Cold Brew	Cold Brew and Iced Coffee	0	0	0	0	0
+Nariño 70 Cold Brew	Freshly Brewed Coffee	5	0	0	0	0
+Nariño 70 Cold Brew with Milk	Cold Brew and Iced Coffee	0	0	0	0	0
+Nariño 70 Cold Brew with Milk	Freshly Brewed Coffee	0	0	0	0	0
+Nitro Cold Brew	Cold Brew and Iced Coffee	5	0	0	0	0
+Nitro Cold Brew	Freshly Brewed Coffee	5	0	0	0	0
+Nitro Cold Brew with Sweet Cream	Cold Brew and Iced Coffee	70	5	5	0	1
+Nitro Cold Brew with Sweet Cream	Freshly Brewed Coffee	70	5	5	0	1
+Ombré Pink Drink	"Starbucks Refreshers""! Beverages"					
+Orange Cream Soda	"Fizzio""! Handcrafted Sodas"					
+Organic Chocolate Milk Box	Kids  Drinks & Others					
+"Passion Tango""! Herbal Tea"	Lattes and Teas					
+Peach Tranquility® Herbal Tea	Lattes and Teas					
+Peppermint Hot Chocolate	Chocolate Beverages	390	9	65	4	13
+Peppermint Mocha	Starbucks Espresso Beverages	360	8	60	4	12
+Peppermint Mocha Frappuccino® Blended Beverage	Frappuccino® Blended Beverages	290	2.5	63	2	4
+Peppermint Mocha Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Peppermint Mocha Light Frappuccino® Frappuccino® Blended Beverage	Frappuccino® Blended Beverages	150	1	30	3	5
+Peppermint White Chocolate Mocha	Starbucks Espresso Beverages	430	10	71	0	13
+Peppermint White Chocolate Mocha Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Peppermint White Hot Chocolate	Chocolate Beverages	440	11	71	0	14
+Pike Place® Roast	Freshly Brewed Coffee	5	0	0	0	1
+Pink Drink	"Starbucks Refreshers""! Beverages"					
+Pumpkin Spice Chai Tea Latte	Starbucks Espresso Beverages	290	4.5	54	0	10
+Pumpkin Spice Crème	Kids  Drinks & Others	250	6	38	0	11
+Pumpkin Spice Frappuccino® Blended Beverage	Frappuccino® Blended Beverages	290	3.5	59	0	6
+Pumpkin Spice Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Pumpkin Spice Latte	Starbucks Espresso Beverages	310	7	50	0	14
+Pumpkin Spice Light Frappuccino® Blended Beverage	Frappuccino® Blended Beverages	150	0.5	31	3	6
+Red Velvet Cake Crème Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Royal English Breakfast Tea	Lattes and Teas					
+Royal English Breakfast Tea Latte	Lattes and Teas					
+Salted Caramel Hot Chocolate	Chocolate Beverages	390	9	66	4	13
+Salted Caramel Mocha	Starbucks Espresso Beverages	360	8	61	4	12
+Salted Caramel Mocha Crème Frappuccino®	Frappuccino® Blended Beverages					
+Salted Caramel Mocha Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Salted Caramel Mocha Light Frappuccino® Blended Beverage	Frappuccino® Blended Beverages					
+Shaken Sweet Tea	Lattes and Teas					
+Shaken Sweet Tea	Iced Tea	80	0	19	0	0
+Skinny Mocha	Chocolate Beverages					
+Skinny Mocha	Starbucks Espresso Beverages					
+Snickerdoodle Hot Cocoa	Chocolate Beverages	340	10	51	0	14
+Starbucks Doubleshot® Energy Coffee Drink	Bottled Drinks					
+Starbucks Doubleshot® Energy Mexican Mocha	Bottled Drinks					
+Starbucks Doubleshot® Energy Mocha Drink	Bottled Drinks					
+Starbucks Doubleshot® Energy Vanilla Drink	Bottled Drinks					
+Starbucks Doubleshot® Energy White Chocolate Drink	Bottled Drinks					
+Starbucks Doubleshot® Energy+Cinnamon Dolce Drink	Bottled Drinks					
+Starbucks Doubleshot® Espresso Cubano	Bottled Drinks					
+Starbucks Doubleshot® Espresso Drink	Bottled Drinks					
+Starbucks Doubleshot® Espresso Salted Caramel Cream	Bottled Drinks					
+Starbucks Doubleshot® Light Espresso Drink	Bottled Drinks					
+Starbucks Doubleshot® Protein Caramel	Bottled Drinks					
+Starbucks Doubleshot® on Ice Beverage	Starbucks Espresso Beverages	45	1	5	0	3
+"Starbucks Refreshers""! Blueberry Acai"	Bottled Drinks					
+"Starbucks Refreshers""! Raspberry Pomegranate"	Bottled Drinks	90	0	27	0	0
+Starbucks® Bottled Caramel Frappuccino® Coffee Drink	Bottled Drinks					
+Starbucks® Bottled Coffee Frappuccino® Coffee Drink	Bottled Drinks					
+Starbucks® Bottled Cold Brew Black	Bottled Drinks	Unsweetened				
+Starbucks® Bottled Cold Brew Cocoa and Honey with Cream	Bottled Drinks					
+Starbucks® Bottled Dulce de Leche Frappuccino® Coffee Drink	Bottled Drinks					
+Starbucks® Bottled Mocha Frappuccino® Coffee Drink	Bottled Drinks					
+Starbucks® Bottled Mocha Light Frappuccino® Coffee Drink	Bottled Drinks					
+Starbucks® Bottled S'mores Frappuccino® Coffee Drink	Bottled Drinks					
+Starbucks® Bottled Vanilla Frappuccino® Coffee Drink	Bottled Drinks					
+Starbucks® Bottled Vanilla Light Frappuccino® Coffee Drink	Bottled Drinks					
+Starbucks® Caramel Iced Coffee	Cold Brew and Iced Coffee					
+Starbucks® Caramel Iced Coffee	Bottled Drinks					
+Starbucks® Doubleshot Protein Dark Chocolate	Bottled Drinks	210	2.5	33	2	20
+Starbucks® Doubleshot Protein Vanilla	Bottled Drinks	200	2.5	34	2	20
+Starbucks® Iced Coffee + Milk	Cold Brew and Iced Coffee					
+Starbucks® Iced Coffee + Milk	Bottled Drinks					
+Starbucks® Iced Coffee Caramel	Bottled Drinks	60	0	13	0	1
+Starbucks® Iced Coffee Light Sweetened	Bottled Drinks	50	0	11	0	1
+Starbucks® Iced Coffee Unsweetened	Bottled Drinks	10	0	2	0	1
+Starbucks® Iced Latte - Pumpkin Spice Latte	Bottled Drinks					
+Starbucks® Iced Latte - Salted Caramel Mocha	Bottled Drinks					
+Starbucks® Low Calorie Iced Coffee + Milk	Cold Brew and Iced Coffee					
+Starbucks® Low Calorie Iced Coffee + Milk	Bottled Drinks					
+Starbucks® Vanilla Iced Coffee	Cold Brew and Iced Coffee					
+Starbucks® Vanilla Iced Coffee	Bottled Drinks					
+Steamed Apple Juice	Kids  Drinks & Others					
+Strawberries & Crème Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+"Strawberry Acai Starbucks Refreshers""! Beverage"	"Starbucks Refreshers""! Beverages"	80	0	18	1	0
+Strawberry Smoothie	Smoothies	300	2	60	7	16
+Tazo® Bottled Berry Blossom White	Iced Tea	60	0	15	0	0
+Tazo® Bottled Berry Blossom White	Bottled Drinks	60	0	15	0	0
+Tazo® Bottled Black Mango	Iced Tea	150	0	38	0	0
+Tazo® Bottled Black Mango	Bottled Drinks	150	0	38	0	0
+Tazo® Bottled Black with Lemon	Iced Tea	140	0	35	0	0
+Tazo® Bottled Black with Lemon	Bottled Drinks	140	0	35	0	0
+Tazo® Bottled Brambleberry	Iced Tea	140	0	35	0	0
+Tazo® Bottled Brambleberry	Bottled Drinks	140	0	35	0	0
+Tazo® Bottled Giant Peach	Iced Tea	150	0	37	0	0
+Tazo® Bottled Giant Peach	Bottled Drinks	150	0	37	0	0
+Tazo® Bottled Iced Passion	Iced Tea	70	0	17	0	0
+Tazo® Bottled Iced Passion	Bottled Drinks	70	0	17	0	0
+Tazo® Bottled Lemon Ginger	Iced Tea	120	0	31	0	0
+Tazo® Bottled Lemon Ginger	Bottled Drinks	120	0	31	0	0
+Tazo® Bottled Organic Black Lemonade	Iced Tea	140	0	35	0	0
+Tazo® Bottled Organic Black Lemonade	Bottled Drinks	140	0	35	0	0
+Tazo® Bottled Organic Iced Black Tea	Iced Tea	60	0	15	0	0
+Tazo® Bottled Organic Iced Black Tea	Bottled Drinks	60	0	15	0	0
+Tazo® Bottled Organic Iced Green Tea	Iced Tea	120	0	31	0	0
+Tazo® Bottled Organic Iced Green Tea	Bottled Drinks	120	0	31	0	0
+Tazo® Bottled Plum Pomegranate	Iced Tea	140	0	35	0	0
+Tazo® Bottled Plum Pomegranate	Bottled Drinks	140	0	35	0	0
+Tazo® Bottled Tazoberry	Iced Tea	150	0	38	0	0
+Tazo® Bottled Tazoberry	Bottled Drinks	150	0	38	0	0
+Tazo® Bottled White Cranberry	Iced Tea	140	0	35	0	0
+Tazo® Bottled White Cranberry	Bottled Drinks	140	0	35	0	0
+Teavana® Earl Grey Brewed Tea	Lattes and Teas					
+Teavana® Joy	Lattes and Teas					
+Teavana® London Fog Tea Latte	Lattes and Teas					
+Teavana® Mango Black Tea	Bottled Drinks					
+Teavana® Organic Chai Tea	Lattes and Teas					
+Teavana® Passion Tango® Herbal Tea	Bottled Drinks					
+Teavana® Peach Green Tea	Bottled Drinks					
+Teavana® Shaken Berry Sangria Herbal Tea	Lattes and Teas					
+Teavana® Shaken Iced Black Tea	Lattes and Teas					
+Teavana® Shaken Iced Black Tea	Iced Tea	30	0	8	0	0
+Teavana® Shaken Iced Black Tea Lemonade	Lattes and Teas					
+Teavana® Shaken Iced Black Tea Lemonade	Iced Tea	70	0	17	0	0
+Teavana® Shaken Iced Green Tea	Lattes and Teas					
+Teavana® Shaken Iced Green Tea	Iced Tea	30	0	8	0	0
+Teavana® Shaken Iced Green Tea Lemonade	Lattes and Teas					
+Teavana® Shaken Iced Green Tea Lemonade	Iced Tea	70	0	17	0	0
+"Teavana® Shaken Iced Passion Tango""! Tea"	Lattes and Teas					
+"Teavana® Shaken Iced Passion Tango""! Tea"	Iced Tea	30	0	8	0	0
+"Teavana® Shaken Iced Passion Tango""! Tea Lemonade"	Lattes and Teas					
+"Teavana® Shaken Iced Passion Tango""! Tea Lemonade"	Iced Tea	70	0	17	0	0
+Teavana® Shaken Iced Piña Colada Tea Infusion	Lattes and Teas					
+Teavana® Shaken Iced Piña Colada Tea Infusion	Iced Tea					
+Teavana® Shaken Iced White Tea	Lattes and Teas					
+Teavana® Shaken Iced White Tea Lemonade	Lattes and Teas					
+Teavana® Shaken Peach Citrus White Tea Infusion	Lattes and Teas					
+Teavana® Shaken Peach Citrus White Tea Infusion	Iced Tea	30	0	8	0	0
+Teavana® Shaken Peach Citrus White Tea Infusion Lemonade	Lattes and Teas					
+Teavana® Shaken Peach Citrus White Tea Infusion Lemonade	Iced Tea	50	0	13	0	0
+Teavana® Shaken Pineapple Black Tea Infusion	Lattes and Teas					
+Teavana® Shaken Pineapple Black Tea Infusion	Iced Tea	30	0	8	0	0
+Teavana® Shaken Pineapple Black Tea Infusion Lemonade	Lattes and Teas					
+Teavana® Shaken Pineapple Black Tea Infusion Lemonade	Iced Tea	50	0	13	0	0
+Teavana® Shaken Strawberry Green Tea Infusion	Lattes and Teas					
+Teavana® Shaken Strawberry Green Tea Infusion	Iced Tea	30	0	8	0	0
+Teavana® Shaken Strawberry Green Tea Infusion Lemonade	Lattes and Teas					
+Teavana® Shaken Strawberry Green Tea Infusion Lemonade	Iced Tea	50	0	13	0	0
+Teavana® Sparkling Berry Sangria Herbal Tea	Lattes and Teas					
+"The Pokémon""! GO Frappuccino® Blended Beverage"	Frappuccino® Blended Beverages					
+Toasted Coconut Cold Brew	Freshly Brewed Coffee					
+Toasted White Chocolate Cocoa	Chocolate Beverages	350	9	55	0	14
+Toasted White Chocolate Crème Frappuccino®	Frappuccino® Blended Beverages					
+Toasted White Chocolate Frappuccino®	Frappuccino® Blended Beverages					
+Toasted White Chocolate Light Frappuccino®	Frappuccino® Blended Beverages					
+Toasted White Chocolate Mocha	Starbucks Espresso Beverages	340	8	55	0	13
+Toffee Almondmilk Hot Cocoa	Chocolate Beverages	290	8	40	2	13
+Vanilla Bean Crème Frappuccino® Blended Crème	Frappuccino® Blended Beverages					
+Vanilla Crème	Kids  Drinks & Others	200	6	28	0	10
+Vanilla Latte	Starbucks Espresso Beverages	250	6	37	0	12
+Vanilla Sweet Cream Cold Brew	Cold Brew and Iced Coffee	100	6	12	0	1
+Vanilla Sweet Cream Cold Brew	Freshly Brewed Coffee	110	6	14	0	1
+"Very Berry Hibiscus Starbucks Refreshers""! Beverage"	"Starbucks Refreshers""! Beverages"	60	0	14	1	0
+Violet Drink	"Starbucks Refreshers""! Beverages"					
+White Chocolate Mocha	Chocolate Beverages	360	11	53	0	14
+White Chocolate Mocha	Starbucks Espresso Beverages	360	11	53	0	14
+White Chocolate Mocha Bottled Frappuccino	Bottled Drinks					
+White Chocolate Mocha Frappuccino® Blended Coffee	Frappuccino® Blended Beverages					
+Youthberry® White Tea	Lattes and Teas					
