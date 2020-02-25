@@ -1,0 +1,291 @@
+---
+title: "Class 7 demo"
+author: "Kim Johnson"
+date: "2/24/2020"
+output: html_document
+---
+
+# Skin and lung cancer examples (Applied Regression Analysis and Multivariable Methods, 4th Edition. and https://rpubs.com/kaz_yos/poisson)'
+
+# Create a function to calculate IRR  
+```{r, eval=FALSE}
+glm.RR <- function(GLM.RESULT, digits = 2) {
+
+    if (GLM.RESULT$family$family == "binomial") {
+        LABEL <- "OR"
+    } else if (GLM.RESULT$family$family == "poisson") {
+        LABEL <- "RR"
+    } else {
+        stop("Not logistic or Poisson model")
+    }
+
+    COEF      <- stats::coef(GLM.RESULT)
+    CONFINT   <- stats::confint(GLM.RESULT)
+    TABLE     <- cbind(coef=COEF, CONFINT)
+    TABLE.EXP <- round(exp(TABLE), digits)
+
+    colnames(TABLE.EXP)[1] <- LABEL
+
+    TABLE.EXP
+}
+```
+
+
+# Skin cancer data  
+```{r, eval=FALSE}
+# Create a dataset manually
+nonmel <- read.table(header = TRUE,
+                     text = "
+   cases city u1 u2 u3 u4 u5 u6 u7      n
+1      1    0  1  0  0  0  0  0  0 172675
+2     16    0  0  1  0  0  0  0  0 123065
+3     30    0  0  0  1  0  0  0  0  96216
+4     71    0  0  0  0  1  0  0  0  92051
+5    102    0  0  0  0  0  1  0  0  72159
+6    130    0  0  0  0  0  0  1  0  54722
+7    133    0  0  0  0  0  0  0  1  32185
+8     40    0  0  0  0  0  0  0  0   8328
+9      4    1  1  0  0  0  0  0  0 181343
+10    38    1  0  1  0  0  0  0  0 146207
+11   119    1  0  0  1  0  0  0  0 121374
+12   221    1  0  0  0  1  0  0  0 111353
+13   259    1  0  0  0  0  1  0  0  83004
+14   310    1  0  0  0  0  0  1  0  55932
+15   226    1  0  0  0  0  0  0  1  29007
+16    65    1  0  0  0  0  0  0  0   7583
+")
+
+# Create age.range variable and city variable
+nonmel <- within(nonmel, {
+    age.range <- rep(c("15_24","25_34","35_44","45_54","55_64","65_74","75_84","85+"), 2)
+    age.range <- factor(age.range)
+    age.range <- relevel(age.range, ref = "85+")
+
+    city <- factor(city, 0:1, c("Minneapolis", "Dallas"))
+})
+
+# rop unnecessary columns
+nonmel <- nonmel[c("cases","n","city","age.range")]
+
+# Check data
+View(nonmel)
+
+# Check shape of distribution
+d <- density(nonmel$cases)
+plot(d, xlim=c(1,400))
+hist(nonmel$cases, breaks=c(0,25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400))
+```
+# The outcome that we want to predict is a rate of skin cancer between the two cites (cases/n) but glm only predicts counts per observation. Therefore, we need to use an **offset*, which is defined by log(n) or log(population) in the model.
+```{r, eval=FALSE}
+
+model.0 <- glm(cases ~ city, family ="poisson", data = nonmel)
+summary(model.0) #If you exponentiate the intercept from this simple model you get the mean counts for Minneapolis (exp(4.18014)=65.375, which is equal to (1+16+30+71+102+130+133+40)/8==65.375). The mean counts for Dallas is (exp(4.18014+ 0.86490)=155.25), which is equal to (4+38+119+221+259+310+226+65)/8=155.25 The IRR would then be 2.375 from either 155.25/65.375 or exp(0.86490). But we know that the population sizes are different so we need to correct for that (MSP=651,401 vs. Dallas=735,803) and age that is associated with cancer
+
+
+# Including offset(log(n)) method 1 in the right hand side to get IRR accounting for population size
+model.1 <- glm(cases ~ city + age.range + offset(log(n)), family ="poisson", data = nonmel)
+
+# Using the offset option method 2
+model.2 <- glm(cases ~ city + age.range, offset = log(n), family = "poisson", data = nonmel)
+
+# Results from regular Poisson
+
+summary(model.1)
+summary(model.2)
+```
+
+# To get IRRs and 95% CIs use the funciton glm.RR created above
+```{r, eval=FALSE}
+glm.RR(model.1, 2) # the second option in the function is the number of decimal places
+```
+
+# We can also use this model for prediction
+```{r, eval=FALSE}
+# Predict case per person (n = 1) for oldest people in the Minneapolis
+# see https://stat.ethz.ch/R-manual/R-devel/library/stats/html/predict.glm.html for more information on this function
+exp(predict(model.1, newdata = data.frame(city = "Minneapolis", age.range = "85+", n = 1))) 
+```
+
+```{r, eval=FALSE}
+#How is this calculated?
+#exp(intercept)
+exp( -5.4834 )
+
+#How about for those 75-84?
+exp(predict(model.1, newdata = data.frame(city = "Minneapolis", age.range = "75_84", n = 1))) 
+exp(-5.4834 +-0.1157)
+```
+
+```{r, eval=FALSE}
+## Create dataset to predict 
+newdat1 <- nonmel[c("city","age.range")]
+## Create duplicate dataset to use later
+newdat2 <- newdat1
+
+## Predicted number of cases per person
+#add variable n, which is = 1
+newdat1$n <- 1
+
+#predict cases per person from model
+nonmel$pred.cases.per.one <- exp(predict(model.1, newdat1))
+#To get the number for 15-24 in MSP, we add the intercept + the beta for 15-24 and exponentiate
+
+## Predicted number of cases per one thousand persons
+newdat2$n <- 1000
+nonmel$pred.cases.per.thousand <- exp(predict(model.1, newdat2))
+
+## Predicted number of cases per actual population
+nonmel$pred.cases <- exp(predict(model.1))
+
+## Show prediction results
+nonmel
+```
+
+# What about overdispersion: Use quasi-poisson to get dispersion parameter
+```{r, eval=FALSE}
+
+####extra####
+#get overdispersion parameter from model results (see explanation at https://data.princeton.edu/wws509/r/overdispersion)
+pr <- residuals(model.1,"pearson")
+phi <- sum(pr^2)/df.residual(model.1)
+round(c(phi,sqrt(phi)),4) #sqrt of phi is the number that the SEs will be multiplied by to adjust them for overdispersion
+####extra####
+
+## quasi-Poisson to allow the scale parameter to change from 1. Show the dispersion parameter. If the dispersion parameter in quasi-Poisson is >1 we have overdispersion
+model.1q <- glm(cases ~ city + age.range, offset = log(n), family = quasipoisson(link = "log"), data = nonmel)
+summary(model.1q)
+```
+# Using robust standard errors can also correct for SEs overdispersion. To get robust standard errors:
+```{r, eval=FALSE}
+## Load sandwich package for robust estimator
+library(sandwich)
+## Load lmtest package for coeftest
+library(lmtest)
+## Poisson model with SE estimated via robust variance estimator
+coeftest(model.1, vcov = sandwich)
+
+cov.model.1 <- vcovHC(model.1, type="HC0") #type specifies variance estimator method, the vcovHC function gives the covariance matrix of the coefficient estimates. Need this to estimate robust SE
+std.err <- sqrt(diag(cov.model.1)) #estimate robust standard error for each coefficient
+
+#make a summary table of coefficients, robust SEs, and LL and UL confidence intervals (log scale)
+r.est <- cbind(Estimate= coef(model.1), "Robust SE" = std.err,
+"Pr(>|z|)" = 2 * pnorm(abs(coef(model.1)/std.err), lower.tail=FALSE),
+LL = coef(model.1) - 1.96 * std.err,
+UL = coef(model.1) + 1.96 * std.err) 
+
+r.est
+
+r.est2<-cbind(Estimate= exp(coef(model.1)), LL = exp(coef(model.1) - 1.96 * std.err),
+UL = exp(coef(model.1) + 1.96 * std.err)) 
+r.est2
+```
+#We can also use negbin to overcome overdispersion although we probably do not need to
+```{r, eval=FALSE}
+# Load MASS
+library(MASS)
+# Negative binomial regression
+model.1nb <- glm.nb(cases ~ city + age.range + offset(log(n)), data = nonmel)
+summary(model.1nb)
+```
+# We can also decide which model is better to use (Poisson vs. negbin by comparing models using the liklihood ratio test)
+```{r, eval=FALSE}
+library(lmtest) #model comparison
+lrtest(model.1, model.1nb)
+```
+# Further compare two models
+Below we further compare the estimates between the two models. As the results show, the Poisson regression estimates SEs that are usually smaller than those from the negbin. This implies that the Poisson regression leads to biased significance tests, and tends to make non-significant predictors significant. 
+```{r, eval=FALSE}
+#install.packages("stargazer")
+library(stargazer)
+stargazer(model.1, model.1nb, title="Model Comparison",
+          type="text",align=TRUE,single.row=TRUE, digits=6)
+```
+# A second example, lung cancer deaths in British male physicians
+years.smok a factor giving the number of years smoking
+cigarettes a factor giving cigarette consumption
+Time man-years at risk
+y number of deaths
+
+# install package, load library and data
+```{r, eval=FALSE}
+#install.packages("SMPracticals")
+library(SMPracticals)
+data("lung.cancer")
+View(lung.cancer)
+```
+
+```{r, eval=FALSE}
+head(lung.cancer)
+hist(lung.cancer$y, breaks=c(0,1,2,3,4,5,6,7,8,9,10,11,12))
+```
+
+# Run Poisson regression
+```{r, eval=FALSE}
+## Poisson
+model.P <- glm(y ~ years.smok + cigarettes, offset = log(Time), family = poisson, data = lung.cancer)    
+summary(model.P)
+
+#Use this model to show how you simply get the counts per number of obs years.smk. The exp(intercept) =the number of counts/7 (the number of obs in the 15-19 age group). We need to use the offset to get the number of counts/man-years in each age group
+model.P2 <- glm(y ~ years.smok,  family = poisson, data = lung.cancer)    
+summary(model.P2)
+
+summary(model.P)
+```
+# Get dispersion parameter from quasi poisson
+```{r, eval=FALSE}
+## Quasi-Poisson
+model.Pq <- glm(y ~ years.smok + cigarettes,
+                         offset = log(Time),
+                         family = quasipoisson(link = "log"), data = lung.cancer)    
+summary(model.Pq)
+```
+# Get rate ratios using rate ratio function
+```{r, eval=FALSE}
+glm.RR(model.P, 2)
+```
+
+# Use robust standard errors through the robust sandwich covariance estimator 
+```{r, eval=FALSE}
+## Poisson model with SE estimated via robust variance estimator
+coeftest(model.P, vcov = sandwich)
+```
+
+# Use negative binomial for overdispersion control
+
+```{r, eval=FALSE}
+
+model.nb <- glm.nb(y ~ years.smok + cigarettes + offset(log(Time)), data = lung.cancer)
+summary(model.nb)
+
+#change iterations
+model.nb <- glm.nb(y ~ years.smok + cigarettes + offset(log(Time)), data = lung.cancer, control=glm.control(maxit=60))
+summary(model.nb)
+```
+# Is the negative binomial model better than Possion?
+```{r, eval=FALSE}
+library(lmtest) #model comparison
+lrtest(model.P, model.nb)
+```
+
+# Would use poisson with robust standard errors. Below is the calculation for the IRRs from this model.
+```{r, eval=FALSE}
+cov.model.P <- vcovHC(model.P, type="HC0")
+std.err <- sqrt(diag(cov.model.P))
+r.est <- cbind(Estimate= coef(model.P), "Robust SE" = std.err,
+"Pr(>|z|)" = 2 * pnorm(abs(coef(model.P)/std.err), lower.tail=FALSE),
+LL = coef(model.P) - 1.96 * std.err,
+UL = coef(model.P) + 1.96 * std.err)
+
+r.est
+
+options(scipen=999)
+est <- cbind(IRR = r.est[,1], "2.5%"=r.est[,1]-1.96*r.est[,2], "97.5%"=r.est[,1]+1.96*r.est[,2])
+exp(est)
+
+#another way
+est <- cbind(IRR = coef(model.P), "2.5%"=r.est[,1]-1.96*r.est[,2], "97.5%"=r.est[,1]+1.96*r.est[,2])
+exp(est)
+```
+
+#Let's interpret these results for years.smok20-24
+
