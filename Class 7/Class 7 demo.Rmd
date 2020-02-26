@@ -77,10 +77,9 @@ hist(nonmel$cases, breaks=c(0,25,50,75,100,125,150,175,200,225,250,275,300,325,3
 ```
 # The outcome that we want to predict is a rate of skin cancer between the two cites (cases/n) but glm only predicts counts per observation. Therefore, we need to use an **offset*, which is defined by log(n) or log(population) in the model.
 ```{r, eval=FALSE}
-
 model.0 <- glm(cases ~ city, family ="poisson", data = nonmel)
-summary(model.0) #If you exponentiate the intercept from this simple model you get the mean counts for Minneapolis (exp(4.18014)=65.375, which is equal to (1+16+30+71+102+130+133+40)/8==65.375). The mean counts for Dallas is (exp(4.18014+ 0.86490)=155.25), which is equal to (4+38+119+221+259+310+226+65)/8=155.25 The IRR would then be 2.375 from either 155.25/65.375 or exp(0.86490). But we know that the population sizes are different so we need to correct for that (MSP=651,401 vs. Dallas=735,803) and age that is associated with cancer
-
+summary(model.0) 
+#If you exponentiate the intercept from this simple model you get the mean counts for Minneapolis (exp(4.18014)=65.375, which is equal to (1+16+30+71+102+130+133+40)/8==65.375). The mean counts for Dallas is (exp(4.18014+ 0.86490)=155.25), which is equal to (4+38+119+221+259+310+226+65)/8=155.25. The IRR would then be 2.375 from either 155.25/65.375 or exp(0.86490). But we know that the population sizes are different so we need to correct for that (MSP=651,401 vs. Dallas=735,803) and age that is associated with cancer
 
 # Including offset(log(n)) method 1 in the right hand side to get IRR accounting for population size
 model.1 <- glm(cases ~ city + age.range + offset(log(n)), family ="poisson", data = nonmel)
@@ -93,11 +92,13 @@ model.2 <- glm(cases ~ city + age.range, offset = log(n), family = "poisson", da
 summary(model.1)
 summary(model.2)
 ```
-
 # To get IRRs and 95% CIs use the funciton glm.RR created above
 ```{r, eval=FALSE}
 glm.RR(model.1, 2) # the second option in the function is the number of decimal places
 ```
+# Interpretation
+- city: The indicence rate of skin cancer in  Dallas is 2.23 times higher than the incidence rate of skin cancer in Minneapolis after adjusting for age category
+- age 75-84:  The indicence rate of skin cancer in  age category 75-84 is 11% lower  than the incidence rate of skin cancer in 85+ after adjusting for city 
 
 # We can also use this model for prediction
 ```{r, eval=FALSE}
@@ -114,6 +115,7 @@ exp( -5.4834 )
 #How about for those 75-84?
 exp(predict(model.1, newdata = data.frame(city = "Minneapolis", age.range = "75_84", n = 1))) 
 exp(-5.4834 +-0.1157)
+exp(-0.1157)
 ```
 
 ```{r, eval=FALSE}
@@ -143,7 +145,6 @@ nonmel
 
 # What about overdispersion: Use quasi-poisson to get dispersion parameter
 ```{r, eval=FALSE}
-
 ####extra####
 #get overdispersion parameter from model results (see explanation at https://data.princeton.edu/wws509/r/overdispersion)
 pr <- residuals(model.1,"pearson")
@@ -152,7 +153,7 @@ round(c(phi,sqrt(phi)),4) #sqrt of phi is the number that the SEs will be multip
 ####extra####
 
 ## quasi-Poisson to allow the scale parameter to change from 1. Show the dispersion parameter. If the dispersion parameter in quasi-Poisson is >1 we have overdispersion
-model.1q <- glm(cases ~ city + age.range, offset = log(n), family = quasipoisson(link = "log"), data = nonmel)
+model.1q <- glm(cases ~ city + age.range, offset = log(n), family = quasipoisson, data = nonmel)
 summary(model.1q)
 ```
 # Using robust standard errors can also correct for SEs overdispersion. To get robust standard errors:
@@ -218,14 +219,13 @@ View(lung.cancer)
 head(lung.cancer)
 hist(lung.cancer$y, breaks=c(0,1,2,3,4,5,6,7,8,9,10,11,12))
 ```
-
 # Run Poisson regression
 ```{r, eval=FALSE}
 ## Poisson
 model.P <- glm(y ~ years.smok + cigarettes, offset = log(Time), family = poisson, data = lung.cancer)    
 summary(model.P)
 
-#Use this model to show how you simply get the counts per number of obs years.smk. The exp(intercept) =the number of counts/7 (the number of obs in the 15-19 age group). We need to use the offset to get the number of counts/man-years in each age group
+#Use this model to show how you simply get the counts per number of obs years.smk. The exp(intercept) =the number of counts/7 (the number of obs in the 15-19 years smoked). We need to use the offset to get the number of counts/man-years in each age group
 model.P2 <- glm(y ~ years.smok,  family = poisson, data = lung.cancer)    
 summary(model.P2)
 
@@ -243,17 +243,17 @@ summary(model.Pq)
 ```{r, eval=FALSE}
 glm.RR(model.P, 2)
 ```
+# Interpretation
+- 20-24 years smoked: The incidence rate of lung cancer in those who smoked 20-24 years is  2.58 times higher than the incidence rate of lung cancer in those who smoked 15-19 years  after adjusting cigarette consumption.
+- cigarettes 35+: The incidence rate of lung cancer in those who had cigarette consumption of 35+ is 36.82 times higher than the incidence rate of lung cancer in those who had cigarette consumption of 0  after adjusting years smoked category.
 
 # Use robust standard errors through the robust sandwich covariance estimator 
 ```{r, eval=FALSE}
 ## Poisson model with SE estimated via robust variance estimator
 coeftest(model.P, vcov = sandwich)
 ```
-
 # Use negative binomial for overdispersion control
-
 ```{r, eval=FALSE}
-
 model.nb <- glm.nb(y ~ years.smok + cigarettes + offset(log(Time)), data = lung.cancer)
 summary(model.nb)
 
@@ -264,7 +264,7 @@ summary(model.nb)
 # Is the negative binomial model better than Possion?
 ```{r, eval=FALSE}
 library(lmtest) #model comparison
-lrtest(model.P, model.nb)
+lrtest(model.P, model.nb) #if p-value is <0.05 use negbin
 ```
 
 # Would use poisson with robust standard errors. Below is the calculation for the IRRs from this model.
@@ -284,8 +284,9 @@ exp(est)
 
 #another way
 est <- cbind(IRR = coef(model.P), "2.5%"=r.est[,1]-1.96*r.est[,2], "97.5%"=r.est[,1]+1.96*r.est[,2])
+est
 exp(est)
 ```
-
-#Let's interpret these results for years.smok20-24
+# Let's interpret these results for years.smok20-24
+- The incidence rate of lung cancer for those who smoked 20-24 years is 2.58 times higher (95% CI 0.29-23.06) than the incidence rate of lung cancer for those who smoked 15-19 years  after adjusting for cigarette consumption category.
 
