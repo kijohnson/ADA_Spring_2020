@@ -1,0 +1,388 @@
+---
+title: 'Class Eight: Multinomial and ordinal logistic regression'
+author: "Xiaoyan Wang"
+date: " Mar 4th, 2020"
+output:
+  slidy_presentation: default
+  output:
+  ioslides_presentation: default
+  beamer_presentation:
+    fig_caption: no
+    fig_height: 7
+    fig_width: 6
+sansfont: Arial
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, tidy=TRUE, error=TRUE, message=F,warning = F)
+```
+
+## Learning objectives
+
+-  Understand what multinomial and ordinal logistic regressions are
+-  Know the assumptions of multinomial and ordinal logistic regressions
+-  Be able to use R to perform multinomial and ordinal logistic regressions
+-  Know how to perform hypothesis tests
+-  Know how to estimate and interpret estimates from multinomial and ordinal regression models
+
+## What is multinomial logistic regression (MLR)?
+
+-  A form of logistic regression analysis conducted when the dependent variable is nominal with more than two levels (e.g., insurance status, occupation).
+-  Also known as multinomial logit model, polytomous logistic regression, multiclass logistic regression, softmax regression, the maximum entropy classifier, and the conditional maximum entropy model.
+-  Used to describe data and to explain the relationship between one dependent nominal variable and one or more independent variables. 
+
+## Crucial features
+
+- Suppose our dependent nominal variable y has J levels.
+- Estimate a separate binary logistic regression model for each non-reference level of y compared to the reference level of y, therefore the result is J-1 binary logistic regression models.
+- Each model conveys the effect of predictors on the probability of success in a non-reference level of y, in comparison to the reference level.
+
+## Link function 
+
+- Take the logarithm of the odds of the probability of y=m versus the probability of y=b, where b is the reference outcome whose coefficients associated with the independent variables are constrained to be zero and m is the target outcome.
+
+![The link function](Picture1.png)
+
+
+## Structural model
+
+![The structural model](Jietu20190220-201749.png)
+
+
+## Assumptions
+
+- Dependent variable is nominal with more than two levels
+- Independence of observations 
+- No multicollinearity
+- A linear relationship between any continuous independent variables and the logit transformation of the dependent variable
+- No outliers or highly influential points (Pregibon's (1981) deltabeta or Cook's distance)
+
+
+## Example
+
+- Prostate cancer data was downloaded from the Surveillance, Epidemiology, and End Results Program (SEER) database, a premier data source for cancer statistics in the US. SEER collects incidence, prevalence and survival data.
+- Patients with primary prostate cancer, aged above 18  years with Stage I to IV at diagnosis were included. 
+- In this study, we are interested in the effects of insurance status on stage at diagnosis among prostate cancer patients.
+- The covariates are comprised of patients' demographics, marital status, and SES.
+
+## Get the data and load libraries
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#install packages
+packages <- c("readr", "tidyverse", "nnet", "MASS", "funModeling")
+#install.packages(packages)
+#install.packages("funModeling")
+
+#Load libraries
+library(readr) #for read txt file
+library(tidyverse) # for various packages
+library(nnet) #Multinomial logistic regresison
+library(MASS) #Ordinal logistic regression
+library(funModeling) #for describe function
+
+#Most efficient way
+install.packages("pacman")
+pacman::p_load(readr, tidyverse, nnet, MASS, funModeling)
+
+#read in the data
+Class8 <- read_delim("prostate_SEER.txt", "\t", escape_double = FALSE, trim_ws = TRUE)
+```
+
+## Data Management
+```{r, echo=TRUE,  warning=FALSE}
+##Look at the data 
+names(Class8)<-c("PatientID", "Age", "FirstCancer", "Sex", "Diagnosis_year", "Insurance", "Marital_status", "Race_ethnicity", "Poverty", "Stage") 
+##Look at the variables will be used
+##taking a quick look 
+describe(Class8)
+#Recode the character variables to numeric variables and rocode the factor variables
+Data <- Class8 %>%
+   mutate(Age_num = parse_number(Age),
+         #Non-Hispanic White as reference
+         Race_cat = case_when(Race_ethnicity %in% c("Non-Hispanic Unknown Race", 
+                                                   "Non-Hispanic American Indian/Alaska Native", 
+                                                   "Non-Hispanic Asian or Pacific Islander") ~ "Non-Hispanic Other",
+                             TRUE ~ Race_ethnicity),
+         Race_cat = factor(Race_cat),
+         Race_cat = relevel(Race_cat, ref = "Non-Hispanic White"),
+         #Stage 
+         Stage_cat = replace(Stage, Stage == "UNK Stage", NA),
+         Stage_cat = factor(Stage_cat),
+         #Medicaid as reference
+         Insur_cat = case_when(Insurance %in% c("Insured",
+                                                "Insured/No specifics")  ~ "Private insurance",
+                               Insurance == "Any Medicaid" ~ "Medicaid"),
+         Insur_cat = factor(Insur_cat),
+         Insur_cat = relevel(Insur_cat, ref = "Medicaid"),
+         #Marital status: Married as reference
+         Marital_cat = case_when(Marital_status %in% c("Divorced",
+                                                     "Separated",
+                                                     "Single (never married)",
+                                                     "Unmarried or Domestic Partner",
+                                                     "Widowed") ~ "Single",
+                               Marital_status == "Married (including common law)" ~ "Married"),
+         Marital_cat = factor(Marital_cat),
+         Marital_cat = relevel(Marital_cat, ref = "Married"),
+         #Poverty level: Low poverty as reference
+         Poverty = as.numeric(Poverty),
+         Poverty_cat = ifelse(Poverty < median(Poverty, na.rm = T), "Low poverty", "High poverty"),
+         Poverty_cat = factor(Poverty_cat),
+         Poverty_cat = relevel(Poverty_cat, ref = "Low poverty")) %>%
+  #Keep primary cancer cases only
+  filter(FirstCancer=="Yes")
+```
+
+
+### Drop the cases with missing values on any variables used for complete case analysis
+
+```{r, echo=TRUE,  warning=FALSE}
+Complete <- Data %>%
+  dplyr::select(Age_num : Poverty_cat) %>%
+  drop_na()
+
+MissingRate <-  1- nrow(Complete)/nrow(Data)
+#Look at missing rate
+MissingRate
+```
+
+## Execute a mutilnomial logistic regression
+
+### Below we use the multinom function from the *nnet* package to estimate a multinomial logistic regression model. 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Attach the data to avoid repeatly typing the dataset name 
+attach(Complete)
+##Re-leveling data, choose stage IV as reference
+Stage_cat_re <- relevel(Stage_cat, ref = "IV")
+
+mod <- multinom(Stage_cat_re ~ Insur_cat)
+summary(mod)
+```
+
+## Interpretations
+
+- *Categorical variable*
+- The log odds of being diagnosed at stage I vs. stage IV increased by 0.40 in cases with private insurance compared to those with Medicaid. 
+- The log odds of being diagnosed at stage II vs. stage IV increased by 0.70 in cases with private insurance compared to those with Medicaid. 
+- The log odds of being diagnosed at stage III vs. stage IV increased by 0.71 in cases with private insurance compared to those with Medicaid. 
+
+## Interpretations (con.)
+
+- To know the effect of *Insured* on the logit of a non-reference outcome relative to another non-refernce outcome (e.g.,stage II vs. stage III)), you can take the difference of the two *coefficients* (0.6987445-0.7059517=-0.0072072).
+- Meaning: the log odds of being diagnosed in stage II vs. stage III decreased by 0.007 in those with private insurance compared to those with Medicaid. 
+- You can *also* just relevel the reference category as stage II.
+
+## Interpretations (con.)
+
+- Even though 1 set of coefficients is omitted, there are actually more sets of coefficients that we can calculate with simple math. For a model with four outcomes in our case, we have 6 sets of comparisons (i.e., 6 sets of coefficients): 
+- - stage IV vs III, stage IV vs II, stage IV vs I
+- - stage III vs II, stage III vs I
+- - stage II vs I
+
+## Hypothesis test
+
+- No p values are automatically reported in the multinom function.
+- Use Z-test to test individual parameter (i.e. β).
+- The p-value from this test indicates whether or not we can reject the null hypothesis of β equal to 0 relative to the effect on the reference outcome at a given level of statistical significance (e.g., 0.05). 
+
+```{r, echo=TRUE,  warning=FALSE}
+#calculate z score
+z <- summary(mod)$coefficients/summary(mod)$standard.errors
+# 2-tailed Z test
+p <- (1 - pnorm(abs(z), 0, 1))*2
+p
+
+#Get confidence intervals for the log odds using confint function
+ci <- confint(mod)
+ci
+```
+
+## Odds ratio and 95% CIs
+
+- Odds ratio can be taken and interpreted in the same way as that from a binary logistic model: OR=exp(β). 
+
+```{r}
+## extract the coefficients from the model and exponentiate to get OR
+exp(coef(mod))
+
+#get confidence intervals for ORs
+exp(confint(mod, level=0.95))
+```
+
+## Interpretations
+- *Categorical variable*
+- The odds of being diagnosed with stage I prostate cancer relative to stage IV is 1.5 times greater for privately insured cases versus those with Medicaid. 
+
+## MLR vs. Binary logistic regression
+
+- MLR estimates a separate binary logistic regression model for each level of y compared to the reference level of y, therefore the result is a chain of binary logistic regression models.
+- The binary logistic regression results are shown for the comparisons that only includes the cases with stage I and IV with stage IV as reference category.
+
+```{r}
+#Drop the cases with stage II and stage III
+bi_logit <- Complete %>%
+  filter (Stage_cat %in% c("I", "IV")) %>%
+  mutate (Stage_cat_re =relevel(Stage_cat, ref = "IV"))
+
+#Run a binary logistic regression using stage IV as the reference category
+mod_bi <- glm(Stage_cat_re ~ Insur_cat, data=bi_logit,family=binomial())
+
+#Get the odds ratio and 95%CIs
+exp(cbind("Odds ratio" = coef(mod_bi), confint(mod_bi, level = 0.95)))
+```
+
+## Compared with the multinomial logistic regression
+- The results are pretty similar.
+
+```{r}
+#Extract the results for the comparison group of stage I and stage IV only
+exp(coef(mod)[1,])
+#confidence intervals 
+exp(confint(mod, level=0.95)[1:2,1:2,1])
+```
+
+## Adding potential confounders
+
+```{r}
+##Execute a mutilnomial regression with insurance as independent variable and demographics as covariates
+mod_c <- multinom(Stage_cat_re ~ Insur_cat + Age_num + Race_cat + Marital_cat + Poverty_cat)
+summary(mod_c)
+## extract the coefficients from the model and exponentiate
+exp(coef(mod_c))
+#confidence intervals (efficient method, all)
+exp(confint(mod_c, level=0.95))
+```
+
+
+## Interpretations
+
+- *Continous variable*
+- The odds of being diagnosed with stage I prostate cancer relative to stage IV is 1.02 times greater with each one-year increases in age, holding all other variables constant. 
+- *Categorical variable*
+- The odds of being diagnosed with stage I prostate cancer relative to stage IV is 1.11 times greater for privately insured cases versus those with Medicaid, holding all other variables constant. 
+
+
+## Overview of ordinal outcome variables
+
+- Key features of an ordinal variable: it does have a ranking order, but distances between levels are not measurable (e.g. for pain: none, mild, moderate, severe)
+- Applying an OLS regression to an ordinal outcome variable is a fatal error
+- Alternative models
+  - - Binary logistic regression to collapse categories to create a dichotomous outcome
+  - - Multinomial logistic regression to ignore the ranking order by treating the outcome as a nominal variable
+
+## Ordinal logistic regression
+
+- Ordinal regression is used to predict the dependent variable with ordered multiple categories (e.g., stage, likert scale) and independent variables. 
+- Also known as ordinal logit model, ordered logit model, and proportional odds model.
+
+![Model link function](Picture6.png)
+
+
+## Assumptions
+- Dependent variable should be ordinal variables with more than two levels.
+- There is no multicollinearity.
+- Have proportional odds or parallel regression.
+
+![Parallel regression assumption](Picture4.png)
+
+## Execute an ordinal logistic regression
+
+```{r, echo=TRUE,  warning=FALSE}
+mod1 <- polr(Stage_cat ~ Insur_cat,Hess=TRUE) 
+
+summary(mod1)
+```
+
+## Hypothesis test
+
+- Use Z-test to test individual parameter 
+- The p-value from such test indicates whether or not we can reject the null hypothesis of β equal to 0 at a given level of statistical significance. 
+
+```{r}
+## store table
+ctable <- coef(summary(mod1))
+## calculate and store p values
+p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+p
+## combined table
+ctable <- cbind(ctable, "p value" = p)
+ctable
+# default method gives profiled CIs
+ci <- confint(mod1) 
+ci
+```
+
+## Get the odds ratio and 95%CIs
+
+```{r}
+## odds ratios and 95%CIs
+exp(cbind("Odds ratio" = coef(mod1), confint.default(mod1, level = 0.95)))
+```
+## Interpretations 
+- Exp(β) above was estimated, meaning compare odds from low to high.
+*Categorical variable*
+- The odds of being diagnosed at stage IV are 0.64 times the odds of being diagnosed at *stages III to I* for patients with private insurance than those with Medicaid.
+- *or*
+- The odds of being diagnosed at *stage IV and III* are 0.64 times the odds of being diagnosed at *stages II and I* for patients with private insurance than those with Medicaid. 
+- *or*
+- The odds of being diagnosed at *stage IV to II* are 0.64 times the odds of being diagnosed at *stages I* for patients with private insurance than those with Medicaid. 
+
+## Interpretations 
+- If the Exp(-β) above was estimated, meaning compare odds from high to low.
+
+```{r}
+## odds ratios and 95%CIs
+exp(cbind("Odds ratio" = -coef(mod1)))
+```
+
+## Interpretations 
+- *Categorical variable*
+- The odds of being diagnosed at stage I are 1.57 times the odds of being diagnosed at *stages II to IV* for patients with private insurance than those with Medicaid.
+- *or*
+- The odds of being diagnosed at *stage I and II* are 1.57 times the odds of being diagnosed at *stages III and IV* for patients with private insurance than those with Medicaid.
+- *or*
+- The odds of being diagnosed at *stage I to III* are 1.57 times the odds of being diagnosed at *stages IV* for patients with private insurance than those with Medicaid. 
+
+## Execute an ordinal logistic regression with potential confounders
+
+```{r, echo=TRUE,  warning=FALSE}
+mod1_c <- polr(Stage_cat ~ Insur_cat + Age_num + Race_cat + Marital_cat + Poverty_cat, Hess=TRUE)
+## odds ratios and 95%CIs
+exp(cbind("Odds ratio" = coef(mod1_c), confint.default(mod1_c, level = 0.95)))
+```
+
+## Interpretations 
+
+- Exp(β) above was estimated, meaning compare odds from low to high.
+- Examples
+- *Continous variable*
+- The odds of being diagnosed at *stage IV* is 1.02 times the Odds of being diagnosed at *stages I to III* with each one-year increases in age, holding all other variables constant. 
+ *or*
+- The odds of being diagnosed at *stages IV and III* is 1.02 times the odds of being diagnosed at *stages I and II* with each one-year increase in age, holding all other variables constant. 
+ *or*
+- The odds of being diagnosed at *stages IV to II* is 1.02 times the odds of being diagnosed at *stage I* with each one-year increase in age, holding all other variables constant. 
+
+## Interpretations 
+
+- *Categorical variable*
+- The odds of being diagnosed at stage IV are 0.65 times the odds of being diagnosed at *stages III to I* for patients with private insurance than those with Medicaid at diagnosis, holding all other variables constant.
+ *or*
+- The odds of being diagnosed at *stages IV and III* are 0.65 times the odds of being diagnosed at *stages II and I* for patients with private insurance than those with Medicaid at diagnosis, holding other variables constant. 
+ *or*
+- The odds of being diagnosed at *stages IV to II* are 0.65 times the odds of being diagnosed at *stage I* for patients with private insurance than those with Medicaid at diagnosis, holding other variables constant. 
+
+
+## Notes about parallel regression assumption
+- In most real-world datasets, this assumption is violated.
+- All tests are sensitive to other types of misspecification.
+- When the assumption is violated, the researchers need to consider using alternative models that do not impose the constraint of parallel regressions, such as a multinomial logitistic model.
+- Therefore, the suggestion is that don’t worry about the parallel regression assumption, but always use the multinomial logistic model as a robust check for ordinal logistic model.
+
+## Comparing results between multinomial and ordinal logistic regression
+- The direction of the effect is consistent. 
+
+```{r}
+#multinomial logistic regression
+exp(coef(mod))
+#ordinal logistic regression
+exp(-coef(mod1))
+```
+
