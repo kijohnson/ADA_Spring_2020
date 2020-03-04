@@ -64,7 +64,7 @@ nonmel <- within(nonmel, {
     city <- factor(city, 0:1, c("Minneapolis", "Dallas"))
 })
 
-# rop unnecessary columns
+# drop unnecessary columns
 nonmel <- nonmel[c("cases","n","city","age.range")]
 
 # Check data
@@ -97,7 +97,7 @@ summary(model.2)
 glm.RR(model.1, 2) # the second option in the function is the number of decimal places
 ```
 # Interpretation
-- city: The indicence rate of skin cancer in  Dallas is 2.23 times higher than the incidence rate of skin cancer in Minneapolis after adjusting for age category
+- city: The indicence rate of skin cancer in  Dallas is 2.23 (95% CI 2.02-2.48) times higher than the incidence rate of skin cancer in Minneapolis after adjusting for age category
 - age 75-84:  The indicence rate of skin cancer in  age category 75-84 is 11% lower  than the incidence rate of skin cancer in 85+ after adjusting for city 
 
 # We can also use this model for prediction
@@ -110,12 +110,12 @@ exp(predict(model.1, newdata = data.frame(city = "Minneapolis", age.range = "85+
 ```{r, eval=FALSE}
 #How is this calculated?
 #exp(intercept)
-exp( -5.4834 )
+exp(-5.4834)
 
 #How about for those 75-84?
 exp(predict(model.1, newdata = data.frame(city = "Minneapolis", age.range = "75_84", n = 1))) 
 exp(-5.4834 +-0.1157)
-exp(-0.1157)
+
 ```
 
 ```{r, eval=FALSE}
@@ -182,6 +182,7 @@ r.est2
 ```
 #We can also use negbin to overcome overdispersion although we probably do not need to
 ```{r, eval=FALSE}
+#install.packages("MASS")
 # Load MASS
 library(MASS)
 # Negative binomial regression

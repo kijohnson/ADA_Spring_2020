@@ -496,32 +496,31 @@ Xiaoyan Wang
 <div id="get-the-data-and-load-libraries" class="slide section level2">
 <h1>Get the data and load libraries</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">#install packages</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">packages &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;readr&quot;</span>, <span class="st">&quot;tidyverse&quot;</span>, <span class="st">&quot;nnet&quot;</span>, <span class="st">&quot;MASS&quot;</span>, <span class="st">&quot;funModeling&quot;</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">packages &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;readr&quot;</span>, <span class="st">&quot;tidyverse&quot;</span>, <span class="st">&quot;nnet&quot;</span>, <span class="st">&quot;MASS&quot;</span>, <span class="st">&quot;funModeling&quot;</span>, <span class="st">&quot;brant&quot;</span>)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co">#install.packages(packages)</span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">#install.packages(&quot;funModeling&quot;)</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#Load libraries</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="kw">library</span>(readr) <span class="co">#for read txt file</span></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="kw">library</span>(tidyverse) <span class="co"># for various packages</span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="kw">library</span>(nnet) <span class="co">#Multinomial logistic regresison</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="kw">library</span>(MASS) <span class="co">#Ordinal logistic regression</span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="kw">library</span>(funModeling) <span class="co">#for describe function</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">#Load libraries</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw">library</span>(readr) <span class="co">#for read txt file</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="kw">library</span>(tidyverse) <span class="co"># for various packages</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="kw">library</span>(nnet) <span class="co">#Multinomial logistic regresison</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="kw">library</span>(MASS) <span class="co">#Ordinal logistic regression</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="kw">library</span>(funModeling) <span class="co">#for describe function</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="kw">library</span>(brant) <span class="co">#for testing parallel regression assumption</span></a>
 <a class="sourceLine" id="cb1-12" data-line-number="12"></a>
 <a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#Most efficient way</span></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="kw">install.packages</span>(<span class="st">&quot;pacman&quot;</span>)</a></code></pre></div>
-<pre><code>## Error in contrib.url(repos, &quot;source&quot;): trying to use CRAN without setting a mirror</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">pacman<span class="op">::</span><span class="kw">p_load</span>(readr, tidyverse, nnet, MASS, funModeling)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#read in the data</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">Class8 &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&quot;prostate_SEER.txt&quot;</span>, <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">escape_double =</span> <span class="ot">FALSE</span>, <span class="dt">trim_ws =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#install.packages(&quot;pacman&quot;)</span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">pacman<span class="op">::</span><span class="kw">p_load</span>(readr, tidyverse, nnet, MASS, funModeling, brant)</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#read in the data</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">Class8 &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&quot;prostate_SEER.txt&quot;</span>, <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</a></code></pre></div>
 </div>
 <div id="data-management" class="slide section level2">
 <h1>Data Management</h1>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co">##Look at the data </span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">names</span>(Class8)&lt;-<span class="kw">c</span>(<span class="st">&quot;PatientID&quot;</span>, <span class="st">&quot;Age&quot;</span>, <span class="st">&quot;FirstCancer&quot;</span>, <span class="st">&quot;Sex&quot;</span>, <span class="st">&quot;Diagnosis_year&quot;</span>, <span class="st">&quot;Insurance&quot;</span>, <span class="st">&quot;Marital_status&quot;</span>, <span class="st">&quot;Race_ethnicity&quot;</span>, <span class="st">&quot;Poverty&quot;</span>, <span class="st">&quot;Stage&quot;</span>) </a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">##Look at the variables will be used</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">##taking a quick look </span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="kw">describe</span>(Class8)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">##Look at the data </span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">names</span>(Class8)&lt;-<span class="kw">c</span>(<span class="st">&quot;PatientID&quot;</span>, <span class="st">&quot;Age&quot;</span>, <span class="st">&quot;FirstCancer&quot;</span>, <span class="st">&quot;Sex&quot;</span>, <span class="st">&quot;Diagnosis_year&quot;</span>, <span class="st">&quot;Insurance&quot;</span>, <span class="st">&quot;Marital_status&quot;</span>, <span class="st">&quot;Race_ethnicity&quot;</span>, <span class="st">&quot;Poverty&quot;</span>, <span class="st">&quot;Stage&quot;</span>) </a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">##Look at the variables will be used</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">##taking a quick look </span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">describe</span>(Class8)</a></code></pre></div>
 <pre><code>## Class8 
 ## 
 ##  10  Variables      50310  Observations
@@ -605,66 +604,66 @@ Xiaoyan Wang
 ## Frequency        767     34699      4385      5654      4791
 ## Proportion     0.015     0.690     0.087     0.112     0.095
 ## ---------------------------------------------------------------------------</code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co">#Recode the character variables to numeric variables and rocode the factor variables</span></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">Data &lt;-<span class="st"> </span>Class8 <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">Age_num =</span> <span class="kw">parse_number</span>(Age),</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">         <span class="co">#Non-Hispanic White as reference</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">         <span class="dt">Race_cat =</span> <span class="kw">case_when</span>(Race_ethnicity <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Non-Hispanic Unknown Race&quot;</span>, </a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">                                                   <span class="st">&quot;Non-Hispanic American Indian/Alaska Native&quot;</span>, </a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">                                                   <span class="st">&quot;Non-Hispanic Asian or Pacific Islander&quot;</span>) <span class="op">~</span><span class="st"> &quot;Non-Hispanic Other&quot;</span>,</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">                             <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>Race_ethnicity),</a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">         <span class="dt">Race_cat =</span> <span class="kw">factor</span>(Race_cat),</a>
-<a class="sourceLine" id="cb6-10" data-line-number="10">         <span class="dt">Race_cat =</span> <span class="kw">relevel</span>(Race_cat, <span class="dt">ref =</span> <span class="st">&quot;Non-Hispanic White&quot;</span>),</a>
-<a class="sourceLine" id="cb6-11" data-line-number="11">         <span class="co">#Stage </span></a>
-<a class="sourceLine" id="cb6-12" data-line-number="12">         <span class="dt">Stage_cat =</span> <span class="kw">replace</span>(Stage, Stage <span class="op">==</span><span class="st"> &quot;UNK Stage&quot;</span>, <span class="ot">NA</span>),</a>
-<a class="sourceLine" id="cb6-13" data-line-number="13">         <span class="dt">Stage_cat =</span> <span class="kw">factor</span>(Stage_cat),</a>
-<a class="sourceLine" id="cb6-14" data-line-number="14">         <span class="co">#Medicaid as reference</span></a>
-<a class="sourceLine" id="cb6-15" data-line-number="15">         <span class="dt">Insur_cat =</span> <span class="kw">case_when</span>(Insurance <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Insured&quot;</span>,</a>
-<a class="sourceLine" id="cb6-16" data-line-number="16">                                                <span class="st">&quot;Insured/No specifics&quot;</span>)  <span class="op">~</span><span class="st"> &quot;Private insurance&quot;</span>,</a>
-<a class="sourceLine" id="cb6-17" data-line-number="17">                               Insurance <span class="op">==</span><span class="st"> &quot;Any Medicaid&quot;</span> <span class="op">~</span><span class="st"> &quot;Medicaid&quot;</span>),</a>
-<a class="sourceLine" id="cb6-18" data-line-number="18">         <span class="dt">Insur_cat =</span> <span class="kw">factor</span>(Insur_cat),</a>
-<a class="sourceLine" id="cb6-19" data-line-number="19">         <span class="dt">Insur_cat =</span> <span class="kw">relevel</span>(Insur_cat, <span class="dt">ref =</span> <span class="st">&quot;Medicaid&quot;</span>),</a>
-<a class="sourceLine" id="cb6-20" data-line-number="20">         <span class="co">#Marital status: Married as reference</span></a>
-<a class="sourceLine" id="cb6-21" data-line-number="21">         <span class="dt">Marital_cat =</span> <span class="kw">case_when</span>(Marital_status <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Divorced&quot;</span>,</a>
-<a class="sourceLine" id="cb6-22" data-line-number="22">                                                     <span class="st">&quot;Separated&quot;</span>,</a>
-<a class="sourceLine" id="cb6-23" data-line-number="23">                                                     <span class="st">&quot;Single (never married)&quot;</span>,</a>
-<a class="sourceLine" id="cb6-24" data-line-number="24">                                                     <span class="st">&quot;Unmarried or Domestic Partner&quot;</span>,</a>
-<a class="sourceLine" id="cb6-25" data-line-number="25">                                                     <span class="st">&quot;Widowed&quot;</span>) <span class="op">~</span><span class="st"> &quot;Single&quot;</span>,</a>
-<a class="sourceLine" id="cb6-26" data-line-number="26">                               Marital_status <span class="op">==</span><span class="st"> &quot;Married (including common law)&quot;</span> <span class="op">~</span><span class="st"> &quot;Married&quot;</span>),</a>
-<a class="sourceLine" id="cb6-27" data-line-number="27">         <span class="dt">Marital_cat =</span> <span class="kw">factor</span>(Marital_cat),</a>
-<a class="sourceLine" id="cb6-28" data-line-number="28">         <span class="dt">Marital_cat =</span> <span class="kw">relevel</span>(Marital_cat, <span class="dt">ref =</span> <span class="st">&quot;Married&quot;</span>),</a>
-<a class="sourceLine" id="cb6-29" data-line-number="29">         <span class="co">#Poverty level: Low poverty as reference</span></a>
-<a class="sourceLine" id="cb6-30" data-line-number="30">         <span class="dt">Poverty =</span> <span class="kw">as.numeric</span>(Poverty),</a>
-<a class="sourceLine" id="cb6-31" data-line-number="31">         <span class="dt">Poverty_cat =</span> <span class="kw">ifelse</span>(Poverty <span class="op">&lt;</span><span class="st"> </span><span class="kw">median</span>(Poverty, <span class="dt">na.rm =</span> T), <span class="st">&quot;Low poverty&quot;</span>, <span class="st">&quot;High poverty&quot;</span>),</a>
-<a class="sourceLine" id="cb6-32" data-line-number="32">         <span class="dt">Poverty_cat =</span> <span class="kw">factor</span>(Poverty_cat),</a>
-<a class="sourceLine" id="cb6-33" data-line-number="33">         <span class="dt">Poverty_cat =</span> <span class="kw">relevel</span>(Poverty_cat, <span class="dt">ref =</span> <span class="st">&quot;Low poverty&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-34" data-line-number="34"><span class="st">  </span><span class="co">#Keep primary cancer cases only</span></a>
-<a class="sourceLine" id="cb6-35" data-line-number="35"><span class="st">  </span><span class="kw">filter</span>(FirstCancer<span class="op">==</span><span class="st">&quot;Yes&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co">#Recode the character variables to numeric variables and rocode the factor variables</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">Data &lt;-<span class="st"> </span>Class8 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">Age_num =</span> <span class="kw">parse_number</span>(Age),</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">         <span class="co">#Non-Hispanic White as reference</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">         <span class="dt">Race_cat =</span> <span class="kw">case_when</span>(Race_ethnicity <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Non-Hispanic Unknown Race&quot;</span>, </a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">                                                   <span class="st">&quot;Non-Hispanic American Indian/Alaska Native&quot;</span>, </a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">                                                   <span class="st">&quot;Non-Hispanic Asian or Pacific Islander&quot;</span>) <span class="op">~</span><span class="st"> &quot;Non-Hispanic Other&quot;</span>,</a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">                             <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>Race_ethnicity),</a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">         <span class="dt">Race_cat =</span> <span class="kw">factor</span>(Race_cat),</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">         <span class="dt">Race_cat =</span> <span class="kw">relevel</span>(Race_cat, <span class="dt">ref =</span> <span class="st">&quot;Non-Hispanic White&quot;</span>),</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">         <span class="co">#Stage </span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">         <span class="dt">Stage_cat =</span> <span class="kw">replace</span>(Stage, Stage <span class="op">==</span><span class="st"> &quot;UNK Stage&quot;</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13">         <span class="dt">Stage_cat =</span> <span class="kw">factor</span>(Stage_cat),</a>
+<a class="sourceLine" id="cb4-14" data-line-number="14">         <span class="co">#Medicaid as reference</span></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15">         <span class="dt">Insur_cat =</span> <span class="kw">case_when</span>(Insurance <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Insured&quot;</span>,</a>
+<a class="sourceLine" id="cb4-16" data-line-number="16">                                                <span class="st">&quot;Insured/No specifics&quot;</span>)  <span class="op">~</span><span class="st"> &quot;Private insurance&quot;</span>,</a>
+<a class="sourceLine" id="cb4-17" data-line-number="17">                               Insurance <span class="op">==</span><span class="st"> &quot;Any Medicaid&quot;</span> <span class="op">~</span><span class="st"> &quot;Medicaid&quot;</span>),</a>
+<a class="sourceLine" id="cb4-18" data-line-number="18">         <span class="dt">Insur_cat =</span> <span class="kw">factor</span>(Insur_cat),</a>
+<a class="sourceLine" id="cb4-19" data-line-number="19">         <span class="dt">Insur_cat =</span> <span class="kw">relevel</span>(Insur_cat, <span class="dt">ref =</span> <span class="st">&quot;Medicaid&quot;</span>),</a>
+<a class="sourceLine" id="cb4-20" data-line-number="20">         <span class="co">#Marital status: Married as reference</span></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21">         <span class="dt">Marital_cat =</span> <span class="kw">case_when</span>(Marital_status <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Divorced&quot;</span>,</a>
+<a class="sourceLine" id="cb4-22" data-line-number="22">                                                     <span class="st">&quot;Separated&quot;</span>,</a>
+<a class="sourceLine" id="cb4-23" data-line-number="23">                                                     <span class="st">&quot;Single (never married)&quot;</span>,</a>
+<a class="sourceLine" id="cb4-24" data-line-number="24">                                                     <span class="st">&quot;Unmarried or Domestic Partner&quot;</span>,</a>
+<a class="sourceLine" id="cb4-25" data-line-number="25">                                                     <span class="st">&quot;Widowed&quot;</span>) <span class="op">~</span><span class="st"> &quot;Single&quot;</span>,</a>
+<a class="sourceLine" id="cb4-26" data-line-number="26">                               Marital_status <span class="op">==</span><span class="st"> &quot;Married (including common law)&quot;</span> <span class="op">~</span><span class="st"> &quot;Married&quot;</span>),</a>
+<a class="sourceLine" id="cb4-27" data-line-number="27">         <span class="dt">Marital_cat =</span> <span class="kw">factor</span>(Marital_cat),</a>
+<a class="sourceLine" id="cb4-28" data-line-number="28">         <span class="dt">Marital_cat =</span> <span class="kw">relevel</span>(Marital_cat, <span class="dt">ref =</span> <span class="st">&quot;Married&quot;</span>),</a>
+<a class="sourceLine" id="cb4-29" data-line-number="29">         <span class="co">#Poverty level: Low poverty as reference</span></a>
+<a class="sourceLine" id="cb4-30" data-line-number="30">         <span class="dt">Poverty =</span> <span class="kw">as.numeric</span>(Poverty),</a>
+<a class="sourceLine" id="cb4-31" data-line-number="31">         <span class="dt">Poverty_cat =</span> <span class="kw">ifelse</span>(Poverty <span class="op">&lt;</span><span class="st"> </span><span class="kw">median</span>(Poverty, <span class="dt">na.rm =</span> T), <span class="st">&quot;Low poverty&quot;</span>, <span class="st">&quot;High poverty&quot;</span>),</a>
+<a class="sourceLine" id="cb4-32" data-line-number="32">         <span class="dt">Poverty_cat =</span> <span class="kw">factor</span>(Poverty_cat),</a>
+<a class="sourceLine" id="cb4-33" data-line-number="33">         <span class="dt">Poverty_cat =</span> <span class="kw">relevel</span>(Poverty_cat, <span class="dt">ref =</span> <span class="st">&quot;Low poverty&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-34" data-line-number="34"><span class="st">  </span><span class="co">#Keep primary cancer cases only</span></a>
+<a class="sourceLine" id="cb4-35" data-line-number="35"><span class="st">  </span><span class="kw">filter</span>(FirstCancer<span class="op">==</span><span class="st">&quot;Yes&quot;</span>)</a></code></pre></div>
 <h3 id="drop-the-cases-with-missing-values-on-any-variables-used-for-complete-case-analysis">Drop the cases with missing values on any variables used for complete case analysis</h3>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">Complete &lt;-<span class="st"> </span>Data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(Age_num <span class="op">:</span><span class="st"> </span>Poverty_cat) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw">drop_na</span>()</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">MissingRate &lt;-<span class="st">  </span><span class="dv">1</span><span class="op">-</span><span class="st"> </span><span class="kw">nrow</span>(Complete)<span class="op">/</span><span class="kw">nrow</span>(Data)</a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#Look at missing rate</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">MissingRate</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">Complete &lt;-<span class="st"> </span>Data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(Age_num <span class="op">:</span><span class="st"> </span>Poverty_cat) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="st">  </span><span class="kw">drop_na</span>()</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">MissingRate &lt;-<span class="st">  </span><span class="dv">1</span><span class="op">-</span><span class="st"> </span><span class="kw">nrow</span>(Complete)<span class="op">/</span><span class="kw">nrow</span>(Data)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#Look at missing rate</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">MissingRate</a></code></pre></div>
 <pre><code>## [1] 0.2696796</code></pre>
 </div>
 <div id="execute-a-mutilnomial-logistic-regression" class="slide section level2">
 <h1>Execute a mutilnomial logistic regression</h1>
 <h3 id="below-we-use-the-multinom-function-from-the-nnet-package-to-estimate-a-multinomial-logistic-regression-model.">Below we use the multinom function from the <em>nnet</em> package to estimate a multinomial logistic regression model.</h3>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">#Attach the data to avoid repeatly typing the dataset name </span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">attach</span>(Complete)</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">##Re-leveling data, choose stage IV as reference</span></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">Stage_cat_re &lt;-<span class="st"> </span><span class="kw">relevel</span>(Stage_cat, <span class="dt">ref =</span> <span class="st">&quot;IV&quot;</span>)</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">mod &lt;-<span class="st"> </span><span class="kw">multinom</span>(Stage_cat_re <span class="op">~</span><span class="st"> </span>Insur_cat)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">#Attach the data to avoid repeatly typing the dataset name </span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">attach</span>(Complete)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">##Re-leveling data, choose stage IV as reference</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">Stage_cat_re &lt;-<span class="st"> </span><span class="kw">relevel</span>(Stage_cat, <span class="dt">ref =</span> <span class="st">&quot;IV&quot;</span>)</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">mod &lt;-<span class="st"> </span><span class="kw">multinom</span>(Stage_cat_re <span class="op">~</span><span class="st"> </span>Insur_cat)</a></code></pre></div>
 <pre><code>## # weights:  12 (6 variable)
 ## initial  value 46417.294093 
 ## iter  10 value 27459.858203
 ## final  value 27459.854741 
 ## converged</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">summary</span>(mod)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">summary</span>(mod)</a></code></pre></div>
 <pre><code>## Call:
 ## multinom(formula = Stage_cat_re ~ Insur_cat)
 ## 
@@ -722,18 +721,18 @@ Xiaoyan Wang
 <li>Use Z-test to test individual parameter (i.e. β).</li>
 <li>The p-value from this test indicates whether or not we can reject the null hypothesis of β equal to 0 relative to the effect on the reference outcome at a given level of statistical significance (e.g., 0.05).</li>
 </ul>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">#calculate z score</span></a>
-<a class="sourceLine" id="cb13-2" data-line-number="2">z &lt;-<span class="st"> </span><span class="kw">summary</span>(mod)<span class="op">$</span>coefficients<span class="op">/</span><span class="kw">summary</span>(mod)<span class="op">$</span>standard.errors</a>
-<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="co"># 2-tailed Z test</span></a>
-<a class="sourceLine" id="cb13-4" data-line-number="4">p &lt;-<span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">pnorm</span>(<span class="kw">abs</span>(z), <span class="dv">0</span>, <span class="dv">1</span>))<span class="op">*</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb13-5" data-line-number="5">p</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co">#calculate z score</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">z &lt;-<span class="st"> </span><span class="kw">summary</span>(mod)<span class="op">$</span>coefficients<span class="op">/</span><span class="kw">summary</span>(mod)<span class="op">$</span>standard.errors</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="co"># 2-tailed Z test</span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">p &lt;-<span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">pnorm</span>(<span class="kw">abs</span>(z), <span class="dv">0</span>, <span class="dv">1</span>))<span class="op">*</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">p</a></code></pre></div>
 <pre><code>##     (Intercept) Insur_catPrivate insurance
 ## I             0                0.006698935
 ## II            0                0.000000000
 ## III           0                0.000000000</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">#Get confidence intervals for the log odds using confint function</span></a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">ci &lt;-<span class="st"> </span><span class="kw">confint</span>(mod)</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3">ci</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">#Get confidence intervals for the log odds using confint function</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">ci &lt;-<span class="st"> </span><span class="kw">confint</span>(mod)</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">ci</a></code></pre></div>
 <pre><code>## , , I
 ## 
 ##                                 2.5 %     97.5 %
@@ -757,14 +756,14 @@ Xiaoyan Wang
 <ul>
 <li>Odds ratio can be taken and interpreted in the same way as that from a binary logistic model: OR=exp(β).</li>
 </ul>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">## extract the coefficients from the model and exponentiate to get OR</span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">coef</span>(mod))</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">## extract the coefficients from the model and exponentiate to get OR</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">coef</span>(mod))</a></code></pre></div>
 <pre><code>##     (Intercept) Insur_catPrivate insurance
 ## I    0.09592567                   1.498742
 ## II   2.82608166                   2.011226
 ## III  0.43344393                   2.025774</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co">#get confidence intervals for ORs</span></a>
-<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">confint</span>(mod, <span class="dt">level=</span><span class="fl">0.95</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">#get confidence intervals for ORs</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">confint</span>(mod, <span class="dt">level=</span><span class="fl">0.95</span>))</a></code></pre></div>
 <pre><code>## , , I
 ## 
 ##                                 2.5 %    97.5 %
@@ -796,16 +795,16 @@ Xiaoyan Wang
 <li>MLR estimates a separate binary logistic regression model for each level of y compared to the reference level of y, therefore the result is a chain of binary logistic regression models.</li>
 <li>The binary logistic regression results are shown for the comparisons that only includes the cases with stage I and IV with stage IV as reference category.</li>
 </ul>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co">#Drop the cases with stage II and stage III</span></a>
-<a class="sourceLine" id="cb21-2" data-line-number="2">bi_logit &lt;-<span class="st"> </span>Complete <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="st">  </span><span class="kw">filter</span> (Stage_cat <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;I&quot;</span>, <span class="st">&quot;IV&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb21-4" data-line-number="4"><span class="st">  </span><span class="kw">mutate</span> (<span class="dt">Stage_cat_re =</span><span class="kw">relevel</span>(Stage_cat, <span class="dt">ref =</span> <span class="st">&quot;IV&quot;</span>))</a>
-<a class="sourceLine" id="cb21-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb21-6" data-line-number="6"><span class="co">#Run a binary logistic regression using stage IV as the reference category</span></a>
-<a class="sourceLine" id="cb21-7" data-line-number="7">mod_bi &lt;-<span class="st"> </span><span class="kw">glm</span>(Stage_cat_re <span class="op">~</span><span class="st"> </span>Insur_cat, <span class="dt">data=</span>bi_logit,<span class="dt">family=</span><span class="kw">binomial</span>())</a>
-<a class="sourceLine" id="cb21-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb21-9" data-line-number="9"><span class="co">#Get the odds ratio and 95%CIs</span></a>
-<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="st">&quot;Odds ratio&quot;</span> =<span class="st"> </span><span class="kw">coef</span>(mod_bi), <span class="kw">confint</span>(mod_bi, <span class="dt">level =</span> <span class="fl">0.95</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co">#Drop the cases with stage II and stage III</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">bi_logit &lt;-<span class="st"> </span>Complete <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="st">  </span><span class="kw">filter</span> (Stage_cat <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;I&quot;</span>, <span class="st">&quot;IV&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb19-4" data-line-number="4"><span class="st">  </span><span class="kw">mutate</span> (<span class="dt">Stage_cat_re =</span><span class="kw">relevel</span>(Stage_cat, <span class="dt">ref =</span> <span class="st">&quot;IV&quot;</span>))</a>
+<a class="sourceLine" id="cb19-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb19-6" data-line-number="6"><span class="co">#Run a binary logistic regression using stage IV as the reference category</span></a>
+<a class="sourceLine" id="cb19-7" data-line-number="7">mod_bi &lt;-<span class="st"> </span><span class="kw">glm</span>(Stage_cat_re <span class="op">~</span><span class="st"> </span>Insur_cat, <span class="dt">data=</span>bi_logit,<span class="dt">family=</span><span class="kw">binomial</span>())</a>
+<a class="sourceLine" id="cb19-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb19-9" data-line-number="9"><span class="co">#Get the odds ratio and 95%CIs</span></a>
+<a class="sourceLine" id="cb19-10" data-line-number="10"><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="st">&quot;Odds ratio&quot;</span> =<span class="st"> </span><span class="kw">coef</span>(mod_bi), <span class="kw">confint</span>(mod_bi, <span class="dt">level =</span> <span class="fl">0.95</span>)))</a></code></pre></div>
 <pre><code>##                            Odds ratio      2.5 %    97.5 %
 ## (Intercept)                0.09591476 0.07173243 0.1255226
 ## Insur_catPrivate insurance 1.49903401 1.12917416 2.0290845</code></pre>
@@ -815,20 +814,20 @@ Xiaoyan Wang
 <ul>
 <li>The results are pretty similar.</li>
 </ul>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co">#Extract the results for the comparison group of stage I and stage IV only</span></a>
-<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">coef</span>(mod)[<span class="dv">1</span>,])</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co">#Extract the results for the comparison group of stage I and stage IV only</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">coef</span>(mod)[<span class="dv">1</span>,])</a></code></pre></div>
 <pre><code>##                (Intercept) Insur_catPrivate insurance 
 ##                 0.09592567                 1.49874193</code></pre>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co">#confidence intervals </span></a>
-<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">confint</span>(mod, <span class="dt">level=</span><span class="fl">0.95</span>)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dv">1</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co">#confidence intervals </span></a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">confint</span>(mod, <span class="dt">level=</span><span class="fl">0.95</span>)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dv">1</span>])</a></code></pre></div>
 <pre><code>##                                 2.5 %    97.5 %
 ## (Intercept)                0.07255651 0.1268216
 ## Insur_catPrivate insurance 1.11867327 2.0079387</code></pre>
 </div>
 <div id="adding-potential-confounders" class="slide section level2">
 <h1>Adding potential confounders</h1>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co">##Execute a mutilnomial regression with insurance as independent variable and demographics as covariates</span></a>
-<a class="sourceLine" id="cb27-2" data-line-number="2">mod_c &lt;-<span class="st"> </span><span class="kw">multinom</span>(Stage_cat_re <span class="op">~</span><span class="st"> </span>Insur_cat <span class="op">+</span><span class="st"> </span>Age_num <span class="op">+</span><span class="st"> </span>Race_cat <span class="op">+</span><span class="st"> </span>Marital_cat <span class="op">+</span><span class="st"> </span>Poverty_cat)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co">##Execute a mutilnomial regression with insurance as independent variable and demographics as covariates</span></a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">mod_c &lt;-<span class="st"> </span><span class="kw">multinom</span>(Stage_cat_re <span class="op">~</span><span class="st"> </span>Insur_cat <span class="op">+</span><span class="st"> </span>Age_num <span class="op">+</span><span class="st"> </span>Race_cat <span class="op">+</span><span class="st"> </span>Marital_cat <span class="op">+</span><span class="st"> </span>Poverty_cat)</a></code></pre></div>
 <pre><code>## # weights:  36 (24 variable)
 ## initial  value 46417.294093 
 ## iter  10 value 28300.759993
@@ -836,7 +835,7 @@ Xiaoyan Wang
 ## iter  30 value 26729.980676
 ## final  value 26729.132492 
 ## converged</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">summary</span>(mod_c)</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw">summary</span>(mod_c)</a></code></pre></div>
 <pre><code>## Call:
 ## multinom(formula = Stage_cat_re ~ Insur_cat + Age_num + Race_cat + 
 ##     Marital_cat + Poverty_cat)
@@ -871,8 +870,8 @@ Xiaoyan Wang
 ## 
 ## Residual Deviance: 53458.26 
 ## AIC: 53506.26</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co">## extract the coefficients from the model and exponentiate</span></a>
-<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">coef</span>(mod_c))</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="co">## extract the coefficients from the model and exponentiate</span></a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">coef</span>(mod_c))</a></code></pre></div>
 <pre><code>##      (Intercept) Insur_catPrivate insurance   Age_num
 ## I     0.03844072                   1.110384 1.0200432
 ## II  113.84049574                   2.005882 0.9483189
@@ -885,8 +884,8 @@ Xiaoyan Wang
 ## I                    0.5571304         0.6692035                1.125203
 ## II                   0.9008650         0.6755055                1.025322
 ## III                  0.9395877         0.5864991                1.001421</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co">#confidence intervals (efficient method, all)</span></a>
-<a class="sourceLine" id="cb33-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">confint</span>(mod_c, <span class="dt">level=</span><span class="fl">0.95</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co">#confidence intervals (efficient method, all)</span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">confint</span>(mod_c, <span class="dt">level=</span><span class="fl">0.95</span>))</a></code></pre></div>
 <pre><code>## , , I
 ## 
 ##                                  2.5 %     97.5 %
@@ -973,9 +972,9 @@ Xiaoyan Wang
 </div>
 <div id="execute-an-ordinal-logistic-regression" class="slide section level2">
 <h1>Execute an ordinal logistic regression</h1>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1">mod1 &lt;-<span class="st"> </span><span class="kw">polr</span>(Stage_cat <span class="op">~</span><span class="st"> </span>Insur_cat,<span class="dt">Hess=</span><span class="ot">TRUE</span>) </a>
-<a class="sourceLine" id="cb35-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb35-3" data-line-number="3"><span class="kw">summary</span>(mod1)</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">mod1 &lt;-<span class="st"> </span><span class="kw">polr</span>(Stage_cat <span class="op">~</span><span class="st"> </span>Insur_cat,<span class="dt">Hess=</span><span class="ot">TRUE</span>) </a>
+<a class="sourceLine" id="cb33-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb33-3" data-line-number="3"><span class="kw">summary</span>(mod1)</a></code></pre></div>
 <pre><code>## Call:
 ## polr(formula = Stage_cat ~ Insur_cat, Hess = TRUE)
 ## 
@@ -998,40 +997,41 @@ Xiaoyan Wang
 <li>Use Z-test to test individual parameter</li>
 <li>The p-value from such test indicates whether or not we can reject the null hypothesis of β equal to 0 at a given level of statistical significance.</li>
 </ul>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co">## store table</span></a>
-<a class="sourceLine" id="cb37-2" data-line-number="2">ctable &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(mod1))</a>
-<a class="sourceLine" id="cb37-3" data-line-number="3"><span class="co">## calculate and store p values</span></a>
-<a class="sourceLine" id="cb37-4" data-line-number="4">p &lt;-<span class="st"> </span><span class="kw">pnorm</span>(<span class="kw">abs</span>(ctable[, <span class="st">&quot;t value&quot;</span>]), <span class="dt">lower.tail =</span> <span class="ot">FALSE</span>) <span class="op">*</span><span class="st"> </span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb37-5" data-line-number="5">p</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co">## store table</span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">ctable &lt;-<span class="st"> </span><span class="kw">coef</span>(<span class="kw">summary</span>(mod1))</a>
+<a class="sourceLine" id="cb35-3" data-line-number="3"><span class="co">## calculate and store p values</span></a>
+<a class="sourceLine" id="cb35-4" data-line-number="4">p &lt;-<span class="st"> </span><span class="kw">pnorm</span>(<span class="kw">abs</span>(ctable[, <span class="st">&quot;t value&quot;</span>]), <span class="dt">lower.tail =</span> <span class="ot">FALSE</span>) <span class="op">*</span><span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb35-5" data-line-number="5">p</a></code></pre></div>
 <pre><code>## Insur_catPrivate insurance                       I|II 
 ##               1.614731e-24               0.000000e+00 
 ##                     II|III                     III|IV 
 ##               1.200988e-57              2.800579e-236</code></pre>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co">## combined table</span></a>
-<a class="sourceLine" id="cb39-2" data-line-number="2">ctable &lt;-<span class="st"> </span><span class="kw">cbind</span>(ctable, <span class="st">&quot;p value&quot;</span> =<span class="st"> </span>p)</a>
-<a class="sourceLine" id="cb39-3" data-line-number="3">ctable</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co">## combined table</span></a>
+<a class="sourceLine" id="cb37-2" data-line-number="2">ctable &lt;-<span class="st"> </span><span class="kw">cbind</span>(ctable, <span class="st">&quot;p value&quot;</span> =<span class="st"> </span>p)</a>
+<a class="sourceLine" id="cb37-3" data-line-number="3">ctable</a></code></pre></div>
 <pre><code>##                                 Value Std. Error   t value       p value
 ## Insur_catPrivate insurance -0.4528736 0.04431283 -10.21992  1.614731e-24
 ## I|II                       -4.3751629 0.05804874 -75.37050  0.000000e+00
 ## II|III                      0.6805588 0.04252468  16.00386  1.200988e-57
 ## III|IV                      1.4236127 0.04337291  32.82263 2.800579e-236</code></pre>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="co"># default method gives profiled CIs</span></a>
-<a class="sourceLine" id="cb41-2" data-line-number="2">ci &lt;-<span class="st"> </span><span class="kw">confint</span>(mod1) </a>
-<a class="sourceLine" id="cb41-3" data-line-number="3">ci</a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co"># default method gives profiled CIs</span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2">ci &lt;-<span class="st"> </span><span class="kw">confint</span>(mod1) </a>
+<a class="sourceLine" id="cb39-3" data-line-number="3">ci</a></code></pre></div>
 <pre><code>##      2.5 %     97.5 % 
 ## -0.5393816 -0.3656608</code></pre>
 </div>
 <div id="get-the-odds-ratio-and-95cis" class="slide section level2">
 <h1>Get the odds ratio and 95%CIs</h1>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="co">## odds ratios and 95%CIs</span></a>
-<a class="sourceLine" id="cb43-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="st">&quot;Odds ratio&quot;</span> =<span class="st"> </span><span class="kw">coef</span>(mod1), <span class="kw">confint.default</span>(mod1, <span class="dt">level =</span> <span class="fl">0.95</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="co">## odds ratios and 95%CIs</span></a>
+<a class="sourceLine" id="cb41-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="st">&quot;Odds ratio&quot;</span> =<span class="st"> </span><span class="kw">coef</span>(mod1), <span class="kw">confint.default</span>(mod1, <span class="dt">level =</span> <span class="fl">0.95</span>)))</a></code></pre></div>
 <pre><code>##                            Odds ratio     2.5 %    97.5 %
 ## Insur_catPrivate insurance  0.6357985 0.5829084 0.6934875</code></pre>
 </div>
 <div id="interpretations-3" class="slide section level2">
 <h1>Interpretations</h1>
 <ul>
-<li>Exp(β) above was estimated, meaning compare odds from low to high. <em>Categorical variable</em></li>
+<li>Exp(β) above was estimated, meaning compare odds from low to high.</li>
+<li><em>Categorical variable</em></li>
 <li>The odds of being diagnosed at stage IV are 0.64 times the odds of being diagnosed at <em>stages III to I</em> for patients with private insurance than those with Medicaid.</li>
 <li><em>or</em></li>
 <li>The odds of being diagnosed at <em>stage IV and III</em> are 0.64 times the odds of being diagnosed at <em>stages II and I</em> for patients with private insurance than those with Medicaid.</li>
@@ -1044,8 +1044,8 @@ Xiaoyan Wang
 <ul>
 <li>If the Exp(-β) above was estimated, meaning compare odds from high to low.</li>
 </ul>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="co">## odds ratios and 95%CIs</span></a>
-<a class="sourceLine" id="cb45-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="st">&quot;Odds ratio&quot;</span> =<span class="st"> </span><span class="op">-</span><span class="kw">coef</span>(mod1)))</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="co">## odds ratios and 95%CIs</span></a>
+<a class="sourceLine" id="cb43-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="st">&quot;Odds ratio&quot;</span> =<span class="st"> </span><span class="op">-</span><span class="kw">coef</span>(mod1)))</a></code></pre></div>
 <pre><code>##                            Odds ratio
 ## Insur_catPrivate insurance   1.572825</code></pre>
 </div>
@@ -1062,9 +1062,9 @@ Xiaoyan Wang
 </div>
 <div id="execute-an-ordinal-logistic-regression-with-potential-confounders" class="slide section level2">
 <h1>Execute an ordinal logistic regression with potential confounders</h1>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1">mod1_c &lt;-<span class="st"> </span><span class="kw">polr</span>(Stage_cat <span class="op">~</span><span class="st"> </span>Insur_cat <span class="op">+</span><span class="st"> </span>Age_num <span class="op">+</span><span class="st"> </span>Race_cat <span class="op">+</span><span class="st"> </span>Marital_cat <span class="op">+</span><span class="st"> </span>Poverty_cat, <span class="dt">Hess=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb47-2" data-line-number="2"><span class="co">## odds ratios and 95%CIs</span></a>
-<a class="sourceLine" id="cb47-3" data-line-number="3"><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="st">&quot;Odds ratio&quot;</span> =<span class="st"> </span><span class="kw">coef</span>(mod1_c), <span class="kw">confint.default</span>(mod1_c, <span class="dt">level =</span> <span class="fl">0.95</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">mod1_c &lt;-<span class="st"> </span><span class="kw">polr</span>(Stage_cat <span class="op">~</span><span class="st"> </span>Insur_cat <span class="op">+</span><span class="st"> </span>Age_num <span class="op">+</span><span class="st"> </span>Race_cat <span class="op">+</span><span class="st"> </span>Marital_cat <span class="op">+</span><span class="st"> </span>Poverty_cat, <span class="dt">Hess=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb45-2" data-line-number="2"><span class="co">## odds ratios and 95%CIs</span></a>
+<a class="sourceLine" id="cb45-3" data-line-number="3"><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="st">&quot;Odds ratio&quot;</span> =<span class="st"> </span><span class="kw">coef</span>(mod1_c), <span class="kw">confint.default</span>(mod1_c, <span class="dt">level =</span> <span class="fl">0.95</span>)))</a></code></pre></div>
 <pre><code>##                              Odds ratio     2.5 %    97.5 %
 ## Insur_catPrivate insurance    0.6521232 0.5958743 0.7136818
 ## Age_num                       1.0185506 1.0156618 1.0214476
@@ -1094,6 +1094,53 @@ Xiaoyan Wang
 <li>The odds of being diagnosed at <em>stages IV to II</em> are 0.65 times the odds of being diagnosed at <em>stage I</em> for patients with private insurance than those with Medicaid at diagnosis, holding other variables constant.</li>
 </ul>
 </div>
+<div id="testing-the-parallel-regression-assumption-using-brant-test" class="slide section level2">
+<h1>Testing the parallel regression assumption using Brant Test</h1>
+<ul>
+<li>Published by Rollin Brant in 1990.</li>
+<li>Brant Test assesses whether the observed deviations from the Ordinal Logistic Regression model are larger than what could be attributed to chance alone.</li>
+<li>In conjunction with polr function.</li>
+<li>If the probability is greater than alpha level (0.05), then the dataset satisfies the proportional odds assumption.</li>
+</ul>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="co">#Univariate model</span></a>
+<a class="sourceLine" id="cb47-2" data-line-number="2"><span class="kw">brant</span>(mod1)</a></code></pre></div>
+<pre><code>## ------------------------------------------------------------ 
+## Test for         X2  df  probability 
+## ------------------------------------------------------------ 
+## Omnibus              86.64   2   0
+## Insur_catPrivate insurance   86.64   2   0
+## ------------------------------------------------------------ 
+## 
+## H0: Parallel Regression Assumption holds</code></pre>
+<pre><code>##                                  X2 df  probability
+## Omnibus                    86.64216  2 1.534239e-19
+## Insur_catPrivate insurance 86.64216  2 1.534239e-19</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="co">#Multivariate model</span></a>
+<a class="sourceLine" id="cb50-2" data-line-number="2"><span class="kw">brant</span>(mod1_c)</a></code></pre></div>
+<pre><code>## ------------------------------------------------------------ 
+## Test for         X2  df  probability 
+## ------------------------------------------------------------ 
+## Omnibus              1317.43 14  0
+## Insur_catPrivate insurance   86.91   2   0
+## Age_num              1019.29 2   0
+## Race_catHispanic (All Races) 3.79    2   0.15
+## Race_catNon-Hispanic Black   82.85   2   0
+## Race_catNon-Hispanic Other   4.98    2   0.08
+## Marital_catSingle        96.8    2   0
+## Poverty_catHigh poverty  0.77    2   0.68
+## ------------------------------------------------------------ 
+## 
+## H0: Parallel Regression Assumption holds</code></pre>
+<pre><code>##                                        X2 df   probability
+## Omnibus                      1317.4347791 14 9.583027e-273
+## Insur_catPrivate insurance     86.9138500  2  1.339360e-19
+## Age_num                      1019.2893481  2 4.614560e-222
+## Race_catHispanic (All Races)    3.7937608  2  1.500359e-01
+## Race_catNon-Hispanic Black     82.8505530  2  1.021483e-18
+## Race_catNon-Hispanic Other      4.9759583  2  8.307769e-02
+## Marital_catSingle              96.8048802  2  9.529878e-22
+## Poverty_catHigh poverty         0.7710737  2  6.800855e-01</code></pre>
+</div>
 <div id="notes-about-parallel-regression-assumption" class="slide section level2">
 <h1>Notes about parallel regression assumption</h1>
 <ul>
@@ -1108,14 +1155,14 @@ Xiaoyan Wang
 <ul>
 <li>The direction of the effect is consistent.</li>
 </ul>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="co">#multinomial logistic regression</span></a>
-<a class="sourceLine" id="cb49-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">coef</span>(mod))</a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="co">#multinomial logistic regression</span></a>
+<a class="sourceLine" id="cb53-2" data-line-number="2"><span class="kw">exp</span>(<span class="kw">coef</span>(mod))</a></code></pre></div>
 <pre><code>##     (Intercept) Insur_catPrivate insurance
 ## I    0.09592567                   1.498742
 ## II   2.82608166                   2.011226
 ## III  0.43344393                   2.025774</code></pre>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="co">#ordinal logistic regression</span></a>
-<a class="sourceLine" id="cb51-2" data-line-number="2"><span class="kw">exp</span>(<span class="op">-</span><span class="kw">coef</span>(mod1))</a></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="co">#ordinal logistic regression</span></a>
+<a class="sourceLine" id="cb55-2" data-line-number="2"><span class="kw">exp</span>(<span class="op">-</span><span class="kw">coef</span>(mod1))</a></code></pre></div>
 <pre><code>## Insur_catPrivate insurance 
 ##                   1.572825</code></pre>
 </div>
