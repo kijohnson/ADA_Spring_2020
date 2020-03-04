@@ -367,38 +367,35 @@ summary {
 </div>
 
 
-<div id="instructions.-in-this-homework-we-will-continue-to-work-on-analyzing-the-association-between-insurance-and-stage-at-diagnosis-with-three-covariates-including-age-race-and-marital-status.-please-submit-your-homework-by-uploading-the-.rmd-file-to-box-as-instructed.-please-also-store-the-dataset-that-you-download-from-canvas-in-the-same-folder-as-the-rmd-file-for-this-homework.-that-way-you-will-not-have-to-change-the-import-code-and-neither-will-we-when-we-grade-it." class="section level4">
-<h4>Instructions. In this homework, we will continue to work on analyzing the association between <em>Insurance</em> and <em>Stage at diagnosis</em> with three covariates including <em>Age</em>, <em>Race</em>, and <em>Marital status</em>. Please submit your homework by uploading the .RMD file to Box as instructed. Please also store the dataset that you download from Canvas in the same folder as the RMD file for this homework. That way you will not have to change the import code (and neither will we when we grade it).</h4>
+<div id="instructions.-in-this-homework-we-will-continue-to-work-on-analyzing-the-association-between-marital-status-and-stage-at-diagnosis-with-three-covariates-including-age-race-and-insurance-status-using-complete-dataset-that-we-used-in-class.-please-submit-your-homework-by-uploading-the-.rmd-file-to-box-as-instructed.-please-also-store-the-dataset-that-you-download-from-canvas-in-the-same-folder-as-the-rmd-file-for-this-homework.-that-way-you-will-not-have-to-change-the-import-code-and-neither-will-we-when-we-grade-it." class="section level4">
+<h4>Instructions. In this homework, we will continue to work on analyzing the association between <em>Marital status</em> and <em>Stage at diagnosis</em> with three covariates including <em>Age</em>, <em>Race</em>, and <em>Insurance status</em> using <em>Complete</em> dataset that we used in class. Please submit your homework by uploading the .RMD file to Box as instructed. Please also store the dataset that you download from Canvas in the same folder as the RMD file for this homework. That way you will not have to change the import code (and neither will we when we grade it).</h4>
 </div>
-<div id="run-the-below-code-to-import-the-data-and-manage-the-data." class="section level3">
-<h3>Run the below code to import the data and manage the data.</h3>
 <div id="a.-re-level-using-the-relevel-function-the-dependent-variable-to-stage-ii-as-the-reference-category-for-modeling." class="section level4">
 <h4>1a. Re-level (using the <em>relevel</em> function) the dependent variable to stage II as the reference category for modeling.</h4>
 </div>
-<div id="b.-execute-a-mutlinomial-regression-model-to-examine-the-effect-of-insurance-category-on-stage-at-diagnosis.-include-the-covariates-age_num-race_cat-marital_cat-in-your-model-to-adjust-for-the-association-between-insurance-category-and-stage-at-diagnosis." class="section level4">
-<h4>1b. Execute a mutlinomial regression model to examine the effect of insurance category on stage at diagnosis. Include the covariates (Age_num, Race_cat, Marital_cat) in your model to adjust for the association between insurance category and stage at diagnosis.</h4>
+<div id="b.-execute-a-mutlinomial-regression-model-to-examine-the-effect-of-marital-status-on-stage-at-diagnosis.-include-the-covariates-age_num-race_cat-insur_cat-in-your-model-to-adjust-for-the-association-between-marital-status-and-stage-at-diagnosis." class="section level4">
+<h4>1b. Execute a mutlinomial regression model to examine the effect of marital status on stage at diagnosis. Include the covariates (Age_num, Race_cat, Insur_cat) in your model to adjust for the association between marital status and stage at diagnosis.</h4>
 </div>
-<div id="perform-hypothesis-tests-for-all-non-reference-levels-of-the-insurance-variable-explain-what-you-find." class="section level4">
-<h4>2. Perform hypothesis tests for all non-reference levels of the <em>insurance</em> variable, explain what you find.</h4>
+<div id="perform-hypothesis-tests-for-marital-status-variable-explain-what-you-find." class="section level4">
+<h4>2. Perform hypothesis tests for <em>marital status</em> variable, explain what you find.</h4>
 </div>
-<div id="a.-get-odds-ratios-for-associations-between-insurance-status-and-stage-at-diagnosis-interpret-the-results.-hint-you-should-have-a-total-of-3-or-a.-or-for-being-diagnosed-in-stage-i-vs.stage-ii-for-those-with-private-insurance-vs.those-who-are-on-medicaid-b.-or-for-being-diagnosed-in-stage-iii-vs.stage-ii-for-those-with-private-insurance-vs.those-who-are-on-medicaid-c.-or-for-being-diagnosed-in-stage-iv-vs.stage-ii-for-those-with-private-insurance-vs.those-who-are-on-medicaid." class="section level4">
-<h4>3a. Get odds ratios for associations between insurance status and stage at diagnosis, interpret the results. Hint: you should have a total of 3 OR (<strong>a.</strong> OR for being diagnosed in Stage I vs. Stage II for those with Private insurance vs. those who are on Medicaid, <strong>b.</strong> OR for being diagnosed in Stage III vs. Stage II for those with Private insurance vs. those who are on Medicaid, <strong>c</strong>. OR for being diagnosed in Stage IV vs. Stage II for those with Private insurance vs. those who are on Medicaid).</h4>
+<div id="a.-get-odds-ratios-for-associations-between-marital-status-and-stage-at-diagnosis-interpret-the-results.-hint-you-should-have-a-total-of-3-or-a.-or-for-being-diagnosed-in-stage-i-vs.stage-ii-for-those-who-are-single-vs.those-who-are-married-b.-or-for-being-diagnosed-in-stage-iii-vs.stage-ii-for-those-who-are-single-vs.those-who-are-married-c.-or-for-being-diagnosed-in-stage-iv-vs.stage-ii-for-those-who-are-single-vs.those-who-are-married." class="section level4">
+<h4>3a. Get odds ratios for associations between marital status and stage at diagnosis, interpret the results. Hint: you should have a total of 3 OR (<strong>a.</strong> OR for being diagnosed in Stage I vs. Stage II for those who are single vs. those who are married, <strong>b.</strong> OR for being diagnosed in Stage III vs. Stage II for those who are single vs. those who are married, <strong>c</strong>. OR for being diagnosed in Stage IV vs. Stage II for those who are single vs. those who are married).</h4>
 </div>
-<div id="b.-get-95-confidene-interval-for-the-odds-ratio-above-for-associations-between-insurance-status-and-stage-at-diagnosis-interpret-the-results.-hint-address-the-consistency-between-the-hypothesis-test-and-confidence-interval." class="section level4">
-<h4>3b. Get 95% confidene interval for the odds ratio above for associations between insurance status and stage at diagnosis, interpret the results. Hint: address the consistency between the hypothesis test and confidence interval.</h4>
+<div id="b.-get-95-confidene-interval-for-the-odds-ratio-above-for-associations-between-marital-status-and-stage-at-diagnosis-interpret-the-results.-hint-address-the-consistency-between-the-hypothesis-test-and-confidence-interval." class="section level4">
+<h4>3b. Get 95% confidene interval for the odds ratio above for associations between <em>marital status</em> and stage at diagnosis, interpret the results. Hint: address the consistency between the hypothesis test and confidence interval.</h4>
 </div>
-<div id="execute-an-ordinal-logistic-regression-with-the-insurance-variable-as-the-independent-variable-and-the-same-covariates." class="section level4">
-<h4>4. Execute an ordinal logistic regression with the <em>insurance</em> variable as the independent variable and the same covariates.</h4>
+<div id="execute-an-ordinal-logistic-regression-with-the-marital-status-variable-as-the-independent-variable-and-the-same-covariates." class="section level4">
+<h4>4. Execute an ordinal logistic regression with the <em>marital status</em> variable as the independent variable and the same covariates.</h4>
 </div>
-<div id="perform-the-hypothesis-test-for-all-non-reference-levels-of-insurance-variables-explain-what-you-find-for-each-level." class="section level4">
-<h4>5. Perform the hypothesis test for all non-reference levels of <em>insurance</em> variables, explain what you find for each level.</h4>
+<div id="perform-the-hypothesis-test-for-all-non-reference-levels-of-marital-status-variables-explain-what-you-find-for-each-level." class="section level4">
+<h4>5. Perform the hypothesis test for all non-reference levels of <em>marital status</em> variables, explain what you find for each level.</h4>
 </div>
-<div id="get-odds-ratios-and-95-confidence-interval-for-associations-between-insurance-status-and-stage-at-diagnosis.-interpret-the-results." class="section level4">
-<h4>6. Get odds ratios and 95% confidence interval for associations between insurance status and stage at diagnosis. Interpret the results.</h4>
+<div id="get-odds-ratios-and-95-confidence-interval-for-associations-between-marital-status-and-stage-at-diagnosis.-interpret-the-results." class="section level4">
+<h4>6. Get odds ratios and 95% confidence interval for associations between marital status and stage at diagnosis. Interpret the results.</h4>
 </div>
-<div id="what-conculsions-can-you-draw-from-both-models-in-terms-of-the-association-between-insurance-and-stage-among-prostate-cancer-patients" class="section level4">
-<h4>7. What conculsions can you draw from both models in terms of the association between insurance and stage among prostate cancer patients?</h4>
-</div>
+<div id="what-conclusions-can-you-draw-from-both-models-in-terms-of-the-association-between-marital-status-and-stage-among-prostate-cancer-patients" class="section level4">
+<h4>7. What conclusions can you draw from both models in terms of the association between marital status and stage among prostate cancer patients?</h4>
 </div>
 
 
