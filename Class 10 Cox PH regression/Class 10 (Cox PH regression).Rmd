@@ -1,0 +1,347 @@
+---
+title: "Cox Proportional Hazards Regression"
+author: "Kim Johnson"
+date: "3/25/2020"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
+---
+## Outline  
+1. Overview
+2. The Cox model and key features
+3. Partial liklihood estimation
+4. Model fitting and significance testing
+5. Handling tied survival times
+6. Interpreting the estimate model using HRs
+7. Interpeting the estimated model using model-based survival curves  
+
+
+## Cox model
+- The Cox proportional hazards model is a regression model that models relative differences in time to event in association with subject characteristics
+- It estimates hazard ratios (HRs)
+- The hazard for each individual *i* at time *t* can be modeled as function of the product of their baseline hazard and the exponentiation of the $\beta$s multiplied by their values for explanatory variables (X's)
+- We work on the log scale as for other regression models to estimate log hazards
+
+![](Cox model specification.png)  
+
+## Assumptions (similar to other models except #5)
+1. Independence of observations
+2. linear relationship between continous variables and outcome
+3. No influential observations
+4. Multiplicative relationship between predictors and hazard
+5. Constant hazard over time
+
+## Key features
+- No requirement for underlying distribution of survival times
+- Assumes a constant ratio of hazards between any two individuals over time (i.e. proportional hazards)
+
+![](Cox model 2.png)
+
+- The model assumes that the hazard for any individual is a fixed proportion of the hazard for any other individual
+- Graphically, the hazard functions for any two individuals should be strictly parallel. Otherwise you have non-proportional hazards and a violation of the ph assumption
+- What's important is that h$_{0}$(t), the baseline hazard rate, cancels out of the numerator and denominator. This means that you can estimate the $\beta$ coefficients of the model without having to specify the baseline hazard rate. 
+
+## Partial likelihood estimation
+- Because h$_{0}$(t) cancels out, Cox developed a method called partial likelihood estimation to estimate the $\beta$'s, which discards the baseline hazard and only treats the second part of the equation as though it were an ordinary likelihood function.
+- It is called partial likelihood because the formula only includes probabilities for subjects who fail and not for those who are censored (although they are considered in the risk set)
+
+## Partial likelihood demo
+
+- Let's see how partial likelihood (PL) estimation works. The goals of this exercise are: 1) to understand Cox regression and PL; and 2) to get a feel for the general procedure of ML estimation
+
+- Three steps for MLE:
+1. Develop a likelihood function (which maximizes the likelihood that the model can reproduce your sample)
+2. Plug in starting values for $\beta$'s
+3. Use a numeric approach to test different sets of $\beta$'s through iteration until you get  convergence where the liklihood no longer changes.
+
+## Partial likelihood estimation (only for single parameter no ties data)
+
+-**Step 1:** Develop PL function
+- Sort data in ascending order of T (survival times)
+- The hazard for individual 1 is:
+
+![](Cox model 3.png) 
+
+## Partial likelihood estimation continued
+
+- The likelihood for individual 1 to have the event at time t is the "hazard for individual 1 at time t/(hazard for the risk set at time t)" or 
+![](PL1.png)
+
+- The likelihood is equal to the hazard for case 1 at time t divided by the sum of the hazards for all cases who were at risk of having the event at time t.  
+
+## Partial likelihood estimation continued
+- Baseline hazard cancels out
+- As a result, the likelihood function is completely expressed by exp($\beta$$_{x}$)
+- The model carefully takes the information of censoring of cases into consideration when building the likelihood function - censoring case information is built into the construction of the risk set.
+
+## Partial likelihood estimation continued
+- The total likelihood function for the sample is then written as a product of the likelihoods for all cases in the sample:
+
+![](PL2.png) 
+
+and defines the likelihood for a censoring case (e.g. case 21, dead=0) as 
+
+![](L1.png) 
+
+
+## Partial likelihood estimation continued
+
+- Putting together the formula more formally
+
+![](PL3.png)
+
+-  Where n = number of failure times
+-  Where Y$_{ij}$=1 if t$_{j}$$\ge$t$_{i}$ and Y$_{ij}$ = 0 if t$_{j}$$\lt$t$_{i}$. 
+-  Here $\delta$$_{i}$ is the censoring indicator and serves like an on/off switch. Again the likelihood function for censoring cases is "no event" or "excluded" (multiply by 1), but the information is taken into consideration in the denominator or risk set.
+
+## Partial likelihood estimation continued
+
+- It is convenient to take the logarithm of the PL, and maximize log PL:
+
+![](PL4.png)
+
+![](IMG_3897.jpg){width=500px}
+
+-**Step 2**: Plug in starting value of $\beta$
+
+-**Step 3**: Search the best $\beta$ until you maximize the log PL
+
+- Let's see how it works in excel
+
+## Partial likelihood estimation continued
+
+- The excel program was designed to maximize the following function:
+
+![](PL4.png)
+
+
+- An important note: It only works with one-predictor-no-ties data
+
+
+## Model fitting and sigificance testing 
+
+- There are three methods to assess the global significance of the model reported in R:
+1. The Wald test (recommended)
+
+2. The partial likelihood ratio test: *G*=2[L$_{p}$(M1)-L$_{p}$(M0)] 
+where L$_{p}$(M1) is the log likelihood of the model containing the covariates being tested and L$_{p}$(M0) is the log likelihood of the null model. We can also use this test to compare models as we have done previously. The degrees of freedom to perform a chi-square test is the number of test covariates
+
+3. The score test
+- In large samples, results from these tests are very close.
+
+## Handling tied survival times (cases with same event times)
+
+- When some cases are tied on event times (i.e., two or more cases whose events occur at the same time), you need to choose an appropriate method to handle ties
+- General ideas: consider true time ordering for the tied cases. Four methods:
+    - **Breslow** (default in Stata & SAS): assumes that the observed ties occurred sequentially.
+    - **Efron**: consider all possible underlying orderings that might exist, but uses a numeric approximation to simplify computations
+    - **Exact**: consider all possible orderings (time-consuming: 5! = 120 possible orderings)
+    - **Discrete**: assumes time is really discrete.
+
+## Handling tied survival times continued
+- How to choose a method to handle ties? Efron is the default for R and highly recommended
+- Computing time is not a concern so exact methods can always produce good results
+
+## Hazard ratio interpretations
+-  The measure of association from a Cox model is called the hazard ratio (HR)
+-  HR=exp($\widehat{\beta}$)
+
+-  95% confidence interval
+
+![](CI2.png)
+
+- A 95% CI that does not include the value 1 is an indicator that the HR is significant at the 0.05 level
+
+## Hazard ratio interpretations continued
+- Examples of interpretations based on HR for re-arrests after release from Allison, 1995
+- Continuous variable: $\beta$(age) = -.057246, exp($\beta$)=.944, 1-.944=.056 “for each one-year increase in the age at release, the hazard of arrest goes down by an estimated 5.6%”;
+- Dummy variable: $\beta$(financial aid) = -.379022, exp($\beta$)=.685, “the hazard of arrest for those who received financial aid is only about 69% of the hazard for those who did not received aid, controlling for all other variables”.  Alternatively you can compare exp($\beta$) with value 1 to do a 1-exp($\beta$) or exp($\beta$)-1 to talk about the hazard rate for the group that is X% lower (or X% higher) than that of the reference group. That is, do 1-.685=.315, and say “the hazard of arrest for those who received aid is 31.5% lower than those who did not.” This is similar to the interpretation of using odds ratio for a logistic regression.
+
+
+## Hazard ratio interpretations continued
+- For a continuous variable, sometimes you may want to interpret the change on hazard rate by using c-units rather than one-unit on the covariate. That is, you want to use a clinically interesting unit of change. For example, you may talk about the relative hazard rate for every 5-year increase in age rather than a one-year increase. 
+
+![](cunit.png)
+
+- Example: 
+
+![](cunit_example.png)
+
+- Every 5-year increase in age increases the hazard rate by 26% with a 95% CI of 12-42%
+
+
+## Model-predicted survivor curves
+- Sometimes we may want to show adjusted survival curves (rather than bivariate KM curves)
+- The key idea behind  model-predicted survivor curves: "Other things being equal (or controlling for all other covariates), what is going to happen?"
+- How to control for all other covariates? The most common method for continous variables like age is to set it at its mean. For categorical variables, you can set them at levels.
+
+## Model-predicted survivor curves continued
+- Controlling other covariates at the sample means, we have:
+
+![](MPcurves.png)
+
+- where S$_{0}$(t) is the baseline survivor function, and i=1,2,..n, or n survivor curves of interest. 
+- You can use any combination of covariate values of interest
+
+## PH assumption testing
+- PH assumption: HR is constant over time
+- Three methods for testing the PH assumption:
+1. Graphical
+2. goodness-of-fit tests
+3. time-dependent variables
+
+## What to do if the assumption is violated?
+1. Nothing not a big deal
+2. Stratified Cox procedure
+    - splits sample into subsamples on levels of stratification variable
+    - assumes different baseline hazards
+    - get different survival curves for each strata but one HR
+    - used for adjusting variable and not main variable of interest
+3. Report hazard ratios for varying follow-up intervals
+4. Restricted mean survival time models
+  
+## Let's do some of the modeling in R using the leukemia dataset from last week.  This demo will again use the leukemia remission/death data that we used last week with the addition of sex as a variable. We will use Cox proportional hazards regression to model the hazard of leukemia relapse in the untreated vs. treated groups.
+
+## Install packages
+```{r}
+#install.packages("survival") #for survival analysis by group
+#install.packages('ggfortify') #for survival analysis by group
+#install.packages("survminer") #for pairwise diffs
+#install.packages("readxl") #for importing excel datasets
+#install.packages("tidyverse")
+#install.packages("lmtest")
+#install.packages("MASS")
+library(survminer)#for pairwise diffs
+library(survival) #for calculating KM values
+library(MASS)#for log log survival curves
+library(ggfortify) #for KM curves
+library(readxl) # for reading in excel file
+library(ggplot2) # for plotting KM curve
+library(tidyverse) # for various packages
+library(lmtest) #model comparison
+library(foreign)
+```
+
+## Import dataset and do data managment needed for this exercise
+```{r}
+leuk <- read.dta("http://web1.sph.emory.edu/dkleinb/allDatasets/surv2datasets/anderson.dta")# leukemia remission dataset with sex variable found on the internet. Please note in this version of the dataset some of the variable names have changed
+
+
+#label the group variable
+leuk$rx<-factor(leuk$rx,
+      levels = c(0,1),
+      labels = c("Treated", "Untreated"))
+
+leuk$id <- rownames(leuk)
+
+```
+
+## Which group has a higher hazard of relapse (treated or untreated)? Run univariate Cox model for examine the association between group and leukemia relapse. Interpret the results.
+```{r}
+treat.mod<-coxph(Surv(survt, status)~rx, leuk, ties="efron") #using ties = Efron, default is Efron, which is fine but this is how it would be changed.
+summary(treat.mod)
+
+#Interpretation: Those who were not treated had a 4.82 (95% CI 2.15-10.81) times higher hazard of relapse than those who were not treated.
+
+treat.mod1<-coxph(Surv(survt, status)~rx, leuk, ties="breslow") #using ties = Breslow--the default for SAS
+summary(treat.mod1)
+```
+## Adjust the Cox model for logwbc and interpret the results.
+```{r}
+treat_adj.mod<-coxph(Surv(survt, status)~rx + logwbc, leuk)
+summary(treat_adj.mod)
+
+#Interpretation: After adjusting for logwbc, those who were not treated had a 4.0 (95% CI 1.74-9.20) times higher hazard of leukemia relapse than those who were treated.
+```
+## Include an interaction term in the model between Group and log_WBC to see if there is effect modification of the hazard of leukemia relapse in those who were not treated vs. treated according to their log_WBC. Interpret the results.
+```{r}
+treat_int.mod<-coxph(Surv(survt, status)~rx  + logwbc + logwbc*rx, leuk)
+summary(treat_int.mod)
+
+#Interpretation: There is no significant effect modification (p for interaction=0.510) of the HR for the association between treatment and leukemia relapse by logwbc.
+```
+## Compare models using the likelihood ratio test (a measure of model fit) and interpret the findings.
+```{r}
+lrtest(treat.mod, treat_adj.mod)
+#The likelihood ratio test indicates that the model that includes log_WBC significantly improves fit compared to the model with just treatment (p=1.094 x 10-7). 
+
+```
+
+## Plot survival curves adjusted for mean log_WBC
+```{r}
+# from http://www.sthda.com/english/wiki/cox-proportional-hazards-model 
+# Create the new data for plotting adjusted survival curves for each treatment group using log_WBC set at the mean
+trt_df <- with(leuk, data.frame(rx = c("Untreated", "Treated"), logwbc=rep(mean(logwbc, na.rm = TRUE),2)))
+trt_df
+
+#problem with survminer ggsurvplot function that won't allow it to take model objects solved with code below. see: https://github.com/kassambara/survminer/issues/324
+fit<-survfit(treat_adj.mod, newdata = trt_df)
+fit$call$formula <- eval(fit$call$formula)
+
+ggsurvplot(fit, data=leuk, conf.int = TRUE, legend.labs=c("Untreated", "Treated"),  ggtheme = theme_minimal()) 
+
+#change X-axis limits for fun
+
+ggsurvplot(fit, data=leuk, conf.int = FALSE, legend.labs=c("Untreated", "Treated"), xlim = c(0, 35), ylim= c(0,1), ggtheme = theme_minimal()) 
+
+#We can see from these curves after adjusting for log_WBC, that at almost all time points there is a higher survival probability in the treated group than in the untreated group.
+
+#what about unadjusted KM curves--how do they compare?
+leukemia.surv <- survfit(Surv(survt, status)~rx, leuk)
+
+ggsurvplot(leukemia.surv, data = leuk, conf.int=FALSE, ggtheme = theme_minimal(), tables.theme = clean_theme())
+
+```
+
+## We can also plot log_WBC adjusted survival curves by sex
+```{r}
+# Need to rerun the cox model with sex in it:
+sex_treat_adj.mod<-coxph(Surv(survt, status)~rx + logwbc + sex, leuk)
+summary(sex_treat_adj.mod)
+
+# Create the new data for plotting adjusted survival curves for each treatment group using log_WBC set at the mean  
+sex_trt_df <- with(leuk, data.frame(sex=c(0,1), rx=1, logwbc=rep(mean(logwbc, na.rm = TRUE),2))) #"The curve(s) produced will be representative of a cohort whose covariates correspond to the values in newdata" (https://stat.ethz.ch/R-manual/R-patched/library/survival/html/survfit.coxph.html)
+sex_trt_df
+
+#here is the code again to fix the error noted above with ggsurvplot
+fit2<-survfit(sex_treat_adj.mod, newdata = sex_trt_df)
+fit2$call$formula <- eval(fit2$call$formula)
+
+ggsurvplot(fit2, data=leuk, conf.int = FALSE, legend.labs=c("Sex=0", "Sex=1"),  ggtheme = theme_minimal()) 
+
+#compare to unadjusted KM curves for sex
+leukemia.surv <- survfit(Surv(survt, status) ~ sex, leuk)
+
+#Using survminer library to calculate KM plots with confidence intervals
+ggsurvplot(leukemia.surv, data = leuk,  ggtheme = theme_minimal(), tables.theme = clean_theme())
+
+```
+
+
+## Besides the PH assumption that we will test next week, there are other diagnostic tests you can do to check for outliers and non-linearity as we did in logistic regression. I show some code for that here for your reference. See: https://www.r-bloggers.com/cox-model-assumptions/ for further details.
+```{r}
+#check for linearity of the log_WBC term
+log_wbc.times.lwbc3<- leuk$lwbc3 * log(leuk$lwbc3)#create term to test linearity
+
+boxTidwelllwbc3 <- coxph(Surv(survt, status)~rx + logwbc + sex + log_wbc.times.lwbc3, leuk)
+summary(sex_treat_adj.mod) #Box Tidwell technique, test the assumption of linearity
+
+summary(boxTidwelllwbc3)
+
+#check for influential observations
+
+sex_treat_adj.mod<-coxph(Surv(survt, status)~rx + logwbc + sex, leuk)
+summary(sex_treat_adj.mod)
+
+ggcoxdiagnostics(sex_treat_adj.mod, type = "dfbeta", sline=FALSE, ggtheme = theme_bw()) #the pattern should not change the beta by a large degree. Here the betas for logwbc change by a factor of less than +/-0.2 for all covariates 
+
+#Compare to model without influential id, pick 22, the HR should go up for sex because the dfbeta residual is negative
+sex_treat_adj.mod<-coxph(Surv(survt, status)~rx + logwbc + sex, leuk[which(leuk$id!=22),])
+summary(sex_treat_adj.mod)
+
+#Compare to model without influential id, pick 38, the HR should go down for sex because the dfbeta residual is positive
+sex_treat_adj.mod<-coxph(Surv(survt, status)~rx + logwbc + sex, leuk[which(leuk$id!=38),])
+summary(sex_treat_adj.mod)
+```
+
+
