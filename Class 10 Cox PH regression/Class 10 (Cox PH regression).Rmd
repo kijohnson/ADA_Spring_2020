@@ -258,12 +258,12 @@ summary(treat_adj.mod)
 treat_int.mod<-coxph(Surv(survt, status)~rx  + logwbc + logwbc*rx, leuk)
 summary(treat_int.mod)
 
-#Interpretation: There is no significant effect modification (p for interaction=0.510) of the HR for the association between treatment and leukemia relapse by logwbc.
+#Interpretation: There is no significant effect modification (p for interaction=0.546) of the HR for the association between treatment and leukemia relapse by logwbc.
 ```
 ## Compare models using the likelihood ratio test (a measure of model fit) and interpret the findings.
 ```{r}
 lrtest(treat.mod, treat_adj.mod)
-#The likelihood ratio test indicates that the model that includes log_WBC significantly improves fit compared to the model with just treatment (p=1.094 x 10-7). 
+#The likelihood ratio test indicates that the model that includes log_WBC significantly improves fit compared to the model with just treatment (p=3 x 10-10). 
 
 ```
 
@@ -340,7 +340,7 @@ sex_treat_adj.mod<-coxph(Surv(survt, status)~rx + logwbc + sex, leuk[which(leuk$
 summary(sex_treat_adj.mod)
 
 #Compare to model without influential id, pick 38, the HR should go down for sex because the dfbeta residual is positive
-sex_treat_adj.mod<-coxph(Surv(survt, status)~rx + logwbc + sex, leuk[which(leuk$id!=38),])
+sex_treat_adj.mod<-coxph(Surv(survt, status)~rx + logwbc + sex, leuk[which(leuk$id!=37),])
 summary(sex_treat_adj.mod)
 ```
 

@@ -1,0 +1,428 @@
+---
+title: 'Class 11: Restricted Mean Survival Time Analysis'
+author: "Xiaoyan Wang"
+date: " April 1st, 2020"
+output:
+  slidy_presentation: default
+  output:
+  ioslides_presentation: default
+sansfont: Arial
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, tidy=TRUE, error=TRUE, message=F,warning = F)
+```
+
+## Outline
+
+-  The Hazards of Hazard Ratios
+-  Solutions for proportional hazard (PH) assumption violation
+-  Restricted mean survival time (RMST) analysis
+-  Estimating RMST and between-group differences in R
+-  Interpreting estimates from RMST analysis
+
+## Cox Proportional Hazard regression
+
+-  **Key assumption**: Proportional Hazard 
+-  The hazards in different groups should be proportional
+-  Hazard ratio remains constant from day 1 of the study until the end of follow-up
+
+## PH assumption 
+
+-  Depends on the follow-up time
+-  Reality: Hazards Usually Not Proportional in Medical Studies
+-  Non-PH may be due to different biological modes of action of the treatments being compared OR to the presence of differentially responsive sub-populations.
+
+## Scenario 1 of PH assumption violation
+
+-  No Immediate Effect
+-  Example: The Air Force/Texas Coronary Atherosclerosis Prevention Study randomly assigned patients with atherosclerotic cardiovascular disease to either statin therapy or placebo (*Stensrud, et al.doi:10.1001/jama.2020.1267; Downs, et al. JAMA. 1998;279(20):1615–1622*)
+-  Event: adverse cardiovascular events
+
+<center>
+![](S1.jpg){width=600px}
+
+![](legend.jpg){width=300px} 
+</center>
+
+-  The effect of statin therapy on cardiovascular events only became evident after 6 months or longer.
+-  The cumulative incidences of major adverse cardiovascular event in the statin and placebo groups were almost identical during the first 6 months of follow-up
+-  Both the hazards (dotted lines) and the survival curves (solid lines) gradually diverge after 6 months
+-  The overall hazard ratio of 0.63 was a weighted average of the time-varying hazard ratios, which were close to 1 in the first months of follow-up and declined later
+
+## Scenario 2 of PH assumption violation 
+
+-  Immediate and Delayed Effects in Opposite Directions
+-  Example: The Norwegian Colorectal Cancer Prevention Trial randomly assigned individuals aged 50 to 64 years to flexible sigmoidoscopy screening or no screening (*Holme, et al.JAMA. 1998;279(20):1615–1622*)
+-  Event: colorectal cancer diagnosis
+
+
+<center>
+![](S2.jpg){width=600px}
+
+![](legend.jpg){width=300px} 
+</center>
+
+-  Screening for colorectal cancer had both an immediate effect on the detection of undiagnosed cancers and a delayed preventive effect due to the removal of cancer precursors
+-  Both the hazards and the survival curves cross (ie, the hazard ratio goes from greater than 1 to less than 1)
+-  The hazard ratio of 0.80 was a weighted average of the time-varying hazard ratios, which were greater than 1 in the early follow-up and less than 1 in the later follow-up
+
+## Scenario 3 of PH assumption violation 
+
+-  Variations in Disease Susceptibility
+-  A Women’s Health Initiative study randomly assigned postmenopausal women to either estrogen plus progestin hormone therapy or placebo (*Women's Health Initiative Investigators. JAMA. 2002;288(3):321–333.*)
+- Event: coronary heart disease
+
+<center>
+![](S3.jpg){width=600px}
+
+![](legend.jpg){width=300px} 
+</center>
+
+-  The hazards cross because of depletion of susceptibles after 2 years in the treatment group, but the survival curves do not cross
+-  Those with greater disease susceptibility are more likely to experience event earlier and thereby would have been removed more rapidly from the treatment group than from the control group
+-  Later in the follow-up time, those without the event in the treatment group would have been, on average, less susceptible to developing the disease than those in the control group
+-  The hazard ratio of event was 1.24 for treatment vs control. However, the hazard ratio was 1.8 during the first year and 0.70 after 5 years of follow-up
+-  The overall hazard ratio of 1.24 was a weighted average of the time-varying hazard ratios throughout the follow-up
+
+## Pitfalls of hazard ratio (HR) 
+
+-  When violated, the weighted average hazard ratio is uninterpretable
+-  Even with no violation, no single summary of a HR can adequately describe the time varying effect 
+-  HR is not clinically meaningful
+-  HR, as a ratio measure by itself, is difficult to appreciate the magnitude of the treatment effect based on HR without knowing the hazard in control group
+
+## Strengths of the Hazard Ratio
+
+-  Widely used 
+-  Effective measure, can be interpreted as incidence rate ratio
+-  Easily estimated using Cox PH regression
+
+## How to check the PH assumption
+
+-  Log-log curves: log(-log(survival)) against log(time)
+-  Cox.zph function applying Schoenfeld test 
+-  Plot Schoenfeld residuals by time
+-  Time interaction term
+
+## Checking PH assumption in leukemia data
+```{r}
+#Install and load packages
+pacman::p_load(tidyverse, survival, survminer, survRM2, haven, gtools, magrittr, mlr)
+
+#Read in data
+#Leukemia remission dataset with sex variable found on the internet 
+leuk <- read_dta("http://web1.sph.emory.edu/dkleinb/allDatasets/surv2datasets/anderson.dta")
+
+#Look at the variables
+dput(names(leuk))
+
+#Cox PH regression
+Coxmod<-coxph(Surv(survt, status)~sex + logwbc + rx, leuk, ties="efron")
+
+#Display the model results
+summary(Coxmod)
+#Interpretation: After adjusting for covariates, individuals treated with placebo have 4.5 (95% CI 1.82-11.11) times higher hazard of replase than individuals with treatment.
+```
+
+## 1. Log-log curves: log(-log(survival)) against log(time)
+```{r}
+#Check PH assumption using log-log survival curves--the curves should be parallel
+leuksurv <- Surv(leuk$survt, leuk$status)
+leuksurv
+plot(survfit(leuksurv ~ leuk$rx), col=c("black", "red"), main= "rx log log plot", fun="cloglog", xlab="Time", ylab="log(-log(S(t)))") #ph assumption not violated
+plot(survfit(leuksurv ~ leuk$sex), col=c("black", "red"), main="sex log log plot", fun="cloglog", xlab="Time", ylab="log(-log(S(t)))") #ph assumption violated
+```
+
+## 2. Schoenfeld goodness-of-fit test 
+```{r}
+#Check PH assumption using the Schoenfeld goodness-of-fit test 
+#The global p-value tells whether the ph assumption is violated for any of the covariates. 
+#You want this test to be non-significant. 
+#For more information on this test: https://www.r-bloggers.com/cox-model-assumptions/
+#Terms: do the test for each term in the model rather than for each separate covariate if TURE
+test.ph<-cox.zph(Coxmod, terms=FALSE)
+test.ph
+#The PH assumption was violated on sex 
+```
+
+## 3. Schoenfeld residuals plots
+```{r}
+#Below code shows plots of Schoenfeld residuals by time without displaying the residuals (change to resid=TRUE to show them). 
+#There should be no pattern in the smoothed black line with time if the ph assumption is met.
+#Read more: https://www.rdocumentation.org/packages/survival/versions/2.41-2/topics/plot.cox.zph
+plot(test.ph, resid=FALSE)
+
+#Here is yet another way to do the Schoenfeld residual plots by time, showing the p-values from the Schoenfeld Test for each covariate
+ggcoxzph(test.ph)
+
+#Additional notes: When you look at the graphs, you are looking for whether there is a pattern in the smoothed Loess line across time. For this example problem there is not, which agrees with the statistical test for the ph assumption. Sometimes the ph assumption will be violated with a p-value <0.05 by the statistical test (cox.zph) and this could be do to a very large sample size or because hazard ratios vary markedly by time--the plots can help you determine whether you can ignore the significant p-value or not. It is suggested by many (including me) that you evaluate the ph assumption both graphically and statistically.
+```
+
+## 4. Time interaction term. 
+```{r}
+#Add an interaction term between the survival time variable of interest and the exposure variable but this is not straightforward in R like it is in other programs (see discussion here: http://sas-and-r.blogspot.com/2010/06/example-742-testing-proportionality.html)
+
+#code from: https://rpubs.com/kaz_yos/kleinbaum-ph-assumption
+
+## Split a survival data set at specified times to form a counting process format
+leuk$id <- as.numeric(rownames(leuk))
+leuk.cp.format <- survSplit(data  = leuk,
+                            cut   = c(7),       # cut at time 7
+                            end   = "survt",    # original survival time
+                            event = "status",   # event indicator
+                            start = "start")    # will be created. zero by default
+
+## Recoding
+leuk.cp.format <- within(leuk.cp.format, {
+
+    ## Create new survival object
+    SurvObj <- Surv(start, survt, status)
+
+    ## Create interval indicator
+    interval <- factor(start, levels = c(0,7), labels = c("First","Second"))
+})
+
+## Reordering
+leuk.cp.format <- leuk.cp.format[with(leuk.cp.format, order(id, survt)),]
+
+## Fit extended Cox model with multiple interaction terms
+## cluster(id) for robutst SE to account for within-cluster non-independence
+res.extended.coxa <- coxph(SurvObj ~ rx + logwbc + sex + rx*interval + logwbc*interval + sex*interval + cluster(id), data = leuk.cp.format)
+summary(res.extended.coxa)
+
+## Testing the rx variable only
+## cluster(id) for robutst SE to account for within-cluster non-independence
+res.extended.cox <- coxph(SurvObj ~ rx + rx*interval + cluster(id), 
+                          data = leuk.cp.format)
+summary(res.extended.cox)
+```
+
+## Solutions for PH assumption violation
+-  Estimating HRs by time intervals for main exposure of interest
+-  Stratified Cox PH regression by covariate not meeting the PH assumption
+-  Ignore it, interpreted as "weighted average" HR
+-  Restricted mean survival time (RMST) analysis
+
+## 1. Estimating HRs by intervals for main exposure of interest
+```{r}
+#By time interval to get HRs
+
+#need to change censorship and follow-up time
+#0-7 weeks
+leuk$survt7<-ifelse(leuk$survt>7, 7, leuk$survt)
+leuk$status7<-ifelse(leuk$survt>7&leuk$status==1, 0, leuk$status)
+interval0to7<-coxph(Surv(survt7, status7)~rx, leuk)
+summary(interval0to7)
+
+#>7 weeks--need to exclude people not at risk
+leuk2<-leuk[which(leuk$survt >7),]
+intervalgt7<-coxph(Surv(survt, status)~rx, leuk2)
+summary(intervalgt7)
+
+# another way using dataset created above called leuk.cp.format
+leuk3<-leuk.cp.format[which(leuk.cp.format$interval=="First"),]
+#use leuk.cp.format dataset interval 1
+res.extended.cox <- coxph(Surv(survt,status) ~ rx, 
+                          leuk3)
+summary(res.extended.cox)
+
+leuk4<-leuk.cp.format[which(leuk.cp.format$interval=="Second"),]
+#use leuk.cp.format dataset interval 2
+res.extended.cox <- coxph(Surv(survt,status) ~ rx, leuk4)
+summary(res.extended.cox)
+```
+
+
+## 2. Stratified Cox PH regression by covariate not meeting the PH assumption
+```{r}
+# model adjusted for sex and WBC that accounts for violation of ph assumption by sex
+cox.0sexa <- coxph(Surv(survt,status) ~ rx+ logwbc +strata(sex), data=leuk)
+summary(cox.0sexa)
+```
+
+## Benefits of using restricted mean survival time (RMST) analysis
+-  Valid under any distribution of the time to event
+-  Readily interpretable as the gain or loss in ‘life expectancy’ between the start of observation and a particular time horizon
+-  As powerful as logrank test or HR-based tests 
+
+## What is RMST?
+
+-  Mean survival time (MST) measures expected life time and can be used to quantify the treatment effect in a time domain
+-  MST is not satisfactory due to heavy censoring or rare events 
+-  In such case, the idea of RMST came from Irwin (1949)
+-  RMST is a well-established, yet under-utilized measure that can be interpreted as the average event-free survival time up to a pre-specified, clinically important time point t 
+-  The time point t, is defined by the researcher according to the research goals 
+
+![Definition of RMST](F1.jpg)
+
+
+- **T** is a random variable indicating a person's survival time 
+- **t** any value of **T**
+- **S(t)** is used to denote the survivor function. It gives the probability that a person's survival time exceeds time **t**
+-  The area under the survival curve S(t) from t=0 to t=1.5
+
+![](RMST1.jpg)
+
+## Restricted mean time lost (RMSL)
+
+-  The area “above” the curve of the survival function up to a time t
+
+![RMSL: Orange area above survival curve; RMST: pink area under the curve ](RMST2.jpg){width=400px} 
+ 
+ 
+![](RMSL.jpg)
+
+
+## Difference in RMST: Unadjusted analysis 
+
+-  RMST difference means gain or loss in the event-free survival time due to treatment vs. control during this period
+
+![](F2.jpg)
+
+-  RMST ratio: ratio of the event-free survival time between treatment vs. control during this period
+
+![](F3.jpg)
+
+-  RMSL ratio: ratio of event-survival time lost between treatment vs. control during this period
+
+![](F4.jpg)
+
+
+
+## Execute RMST
+
+-  Main function `rmst2(time, status, arm, tau)`
+-  time: follow-up time
+-  status: event status
+-  arm: variable of interest (treatment vs. control)
+-  tau: specified observation window (smaller than the minimum of the largest observed time in each of the two groups)
+
+```{r}
+#Calculate RMST for both groups using rmst2 function
+mod <- rmst2(leuk$survt, leuk$status, leuk$rx, tau=20)
+#Display the model results
+print(mod)
+#Plot the survival probability
+plot(mod, xlab="Weeks", ylab="Non-Relapse Probability")
+```
+
+
+## Interpretation
+
+-  **First Block: Restricted Mean Survival Time (RMST) by arm**
+-  The mean relapse time for individuals treated with placebo was 8.4 weeks when following the patients for 20 weeks
+-  The mean relapse time for individuals with treatment was 16.1 weeks when following the patients for 20 weeks
+-  **Second Block: Restricted Mean Time Lost (RMTL) by arm**
+-  The mean relapse time lost for individuals treated with placebo was 11.6 weeks when following the patients for 20 weeks
+-  The mean relapse time lost for individuals with treatment was 3.9 weeks when following the patients for 20 weeks
+-  **Third Block: Between-group contrast**
+-  The difference in RMST (the first row) was -7.688 weeks, with a 95% confidence interval ranging from -11.180 to -4.196 weeks. The point estimate indicated that the time to relapse since treatment for individuals treated with placebo was 7.688 weeks shorter than individuals with treatment on average, when following the patients for 20 weeks.
+
+## RMST with more than 2 arms (variable of interest with more than two levels)
+
+-  Function written
+-  Key elements in the rmst2_plus function: data, time, status, arm, nlevel, ntime
+-  data: dataset name
+-  time: follow-up time
+-  status: event status
+-  arm: variable of interest 
+-  nlevel: the number of levels of the variable of interest minus 1
+-  ntime: tau (specified observation window)
+
+```{r}
+rmst2_plus <- function(data, time, status, arm, nlevel, ntime, ...){
+  #nlevel: the number of levels of variable of interest minus 1
+  for (i in 1:nlevel) {
+    #level = 1, run the RMST model
+    if (i==1) {
+      print("########################################################")
+      print(paste0("Below display the model results of arm =", i, " vs. arm = 0."))
+      print(data %$%rmst2(time, status, arm, tau=ntime, ...))
+    }
+    #level > 1, change all levels to MA other than baseline level and the target level
+    if (i>1) {
+    print("#########################################################")
+    print(paste0("Below display the model results of arm =", i, " vs. arm = 0."))
+    print(
+      data %>%
+         mutate(arm=replace(arm, arm<i & arm>0, NA),
+                arm=replace(arm, arm==i, 1)) %>%
+         filter(!is.na(arm)) %$%
+         rmst2(time, status, arm, tau=ntime, ...)
+      )
+     }
+   }
+}
+```
+
+-  Use lwbc3 (3 levels) as an example 
+```{r}
+#Recode lwbc3 to make the reference levels as 0
+#Create a time variable
+leuk <- leuk %>%
+  mutate(lwbc3_ref=lwbc3-1,
+         arm=lwbc3_ref,
+         time=survt)
+
+#Check
+table(leuk$lwbc3, leuk$arm)
+
+#RMST model
+rmst2_plus(leuk, time, status, arm, 2, 15)
+```
+
+## Interpretation
+
+-  **Restricted Mean Survival Time (RMST) by arm**
+-  The mean relapse time for individuals with the low, middle and high logwbc was 14.364, 11.463, and 6.639 weeks respectively when following the patients for 15 weeks.
+
+-  **Between-group contrast**
+-  The differences in RMST between middle, high logwbc and low logwbc were -2.091 and -7.725 weeks,  which indicated that the time to relapse since treatment for individuals with the middle and high logwbc were 2.091 and 7.725 weeks shorter than individuals with low logwbc on average, when following the patients for 15 weeks.
+
+
+## Adjusted RMST difference with covariates
+
+-  Main function `rmst2(time, status, arm, tau, covariates)`
+-  Covariates: a vector/matrix of the baseline characteristic data
+-  Implement an ANCOVA type adjusted analysis
+-  Utilizes an inverse probability censoring weighting technique to handle censored observations
+-  Other techniques including a pseudo-value technique to handle censored observations
+
+```{r}
+#Choose the set of covariates 
+covar <- c("sex", "logwbc")
+
+mod1 <- rmst2(leuk$survt, leuk$status, leuk$rx, tau=20, covariates = leuk[, covar])
+
+print(mod1)
+```
+
+
+## Interpretation
+
+-  The difference in RMST (the first row of the *Between-group contrast (adjusted for the covariates) * block in the output) was -4.215 weeks. The point estimate indicated that the time to relapse since treatment for individuals treated with placebo was 4.215 weeks shorter than individuals with treatment on average, when following the patients for 20 weeks and holding all other variables constant.
+-  This mean relapse time difference is statistically significant (p=0.006), concurs with the 95% confidence interval (-7.204 to -1.226). 
+
+## Adjusted RMST difference with categorical covariates with more than two levels
+
+- Use logwbc_cat as an example covariate
+```{r}
+#Create dummy variable 
+leuk$lwbc3_ref <- factor(leuk$lwbc3_ref)
+leuk <- createDummyFeatures(leuk, cols = "lwbc3_ref")
+
+#Include the new covariates
+#Display the variable names
+dput(names(leuk))
+
+#Assign the covariates: ignore the first dummy variable
+#This will let the first group as the reference 
+covar <- c("sex", "lwbc3_ref.1", "lwbc3_ref.2")
+
+mod2 <- rmst2(leuk$survt, leuk$status, leuk$rx, tau=20, covariates = leuk[, covar])
+
+print(mod2)
+```
+
+
