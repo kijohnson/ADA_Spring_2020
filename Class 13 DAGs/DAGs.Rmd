@@ -1,0 +1,277 @@
+---
+title: 'Hot Dagitty Dog!! We finally have a rational way to decide what variables to put in our model'
+output:
+  slidy_presentation: default
+  beamer_presentation: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+## Outline for today's class
+
+- Review of confounding
+- Directed acylic graphs key concepts
+- Development of causal models using web-based dagitty 
+
+
+## Recalling what confounding is and why we adjust for it (or condition on it)?
+
+- An association between an exposure and an outcome that may be explained fully or partially by another variable that is both associated with the exposure and is an independent risk factor (or proxy of an independent risk factor) for the outcome
+
+- From Suttorp et al, "A factor that is associated with the exposure and with the outcome and is not in the causal pathway between the exposure and the outcome" (i.e. not a mediator)
+
+## Recalling what confounding is and why we adjust for it (or condition on it)? (cont)
+- Ideally, we would do an experiment to determine whether X causes Y by comparing Y (rate, mean, etc) between two groups that differ only by the presence or absence of X. This is never possible (the counterfactual). Our closest example in humans are RCTs where we can balance confounding variables between two or more groups through randomization.
+
+![](randomize.png){width=50%}
+
+- Most of our public health and social work studies are not RCTs so we typically have to adjust for confounding variables in regression models that may explain any observed relationship between X and Y that is not really due to the causal effect of X on Y but rather due to another variable (Z) that is associated with both X and Y.
+
+## Three properties of a confounder
+
+1. Associated with the outcome (risk factor for outcome)
+2. Associated with the exposure 
+3. Not in the pathway between the exposure and the outcome (i.e. a mediator)
+
+## Figure 1 example for Suttorp articl
+- Typical to think about adjusting for confounding one variable at a time
+
+![](Figure1_Suttorp.png)
+
+
+## What are DAGs?
+
+- Visual representations of causal assumptions used in determine whether a variable is causally related to an outcome (What is the causal impact of X on Y?)
+- Used to determine the **minimal set** of covariates needed to adjust for confounding to get the **total effect** of X on Y. 
+
+
+## Total effect can be decomposed into direct and indirect effects
+
+- Total effect illustrated by c
+
+![diagram courtesy of http://davidakenny.net/cm/mediate.html](Total_effect.png){width=50%}
+
+## Total effect can be decomposed into direct and indirect effects (cont.)
+- Indirect effect of X on Y is illstrated by the path with M in it. The direct effect between X on Y is illustrated by c'
+
+![diagram courtesy of http://davidakenny.net/cm/mediate.html](Mediation.png){width=50%}
+
+- To get the direct effect effect of X on Y, we can do a 'quick and dirty' analysis by adjusting for the mediator M
+- OR we could do a formal mediation analysis
+
+## What are DAGs continued?
+
+- DAGs may include both measured and unmeasured variables
+- They are acyclic, you can't get back where you started by following the directions of the arrows
+- Total effect estimation involves not adjusting for mediators (Q or Z). We do want to adjust for M to get the total effect of X on Y.
+
+![](DAG5.PNG)
+
+## Why use them?
+
+- In the traditional way of thinking about confounding, we consider confounding by controlling for it one variable at a time
+- Using DAGs we consider all variables in a causal model together that can potentially impact an exposure/outcome relationship, which can prevent over and under-adjusting as well as adjusting for mediators and colliders (more later)
+- It is considered by many experts in the field to be "state of the art"
+
+## How do we choose variables to include in our DAG?
+
+- Conduct a literature review
+- Common sense justifications
+- **Not based** on what is available in your dataset (You should draw your DAG without regard to the data you have)
+
+## DAG terminology
+
+- A **path** is a sequence of arrows connecting an exposure to an outcome *independent* of the direction of the arrows
+- A **directed path** is one where the arrows all point in the same direction (can never form a closed loop), the future cannot cause the past making graphs acyclic (a closed loop would imply the future causes the past)
+- It is good practice to start DAGs going from left to right (exposure -> outcome) in order of chronology
+- A **common cause** of an exposure and an outcome is the same as a confounder in the traditional sense
+- A **backdoor path** indicates the presence of confounding in a DAG and needs to be adjusted for by **blocking** on the **common cause**
+![](DAG5.PNG)
+
+## Let's look at the example from the Suttorp et al paper
+- These are the DAGs shown before. These are DAGs because all variables are connected to one another through arrows
+- Arrows represent causal effects of one variable on another (causal pathways)
+- You can remove the causal effect of one factor on another if you **block** (aka adjust) the factor causing the effect. 
+
+![](Figure1_Suttorp.png)
+
+- Age is a **common cause** of both CKD and mortality and is a confounder of the association between CKD and mortality
+- The association between age and CKD is a **backdoor path** that needs to be **blocked** in a regression model (indicated in (c) where box is drawn around age)
+- When all potential backdoor paths are identified through DAGs, counfounding is identified
+
+
+## DAGS showing mediation and no confounding 
+- These DAGS show two paths, one direct and one indirect
+- The path with the mediator (obesity is the mediator in (b)) is the indirect path
+
+![](Figure2_Suttorp.png){width=50%}
+
+
+## Recall methods to control for confounding:
+- Restriction
+- Matching
+- Stratification and pooling
+- Randomization
+- Multivariate adjustment
+- When we control confounding through any of these methods, we *condition*  on a variable (same as adjust for the variable) and that the backdoor path has been blocked/confounding is removed.
+- Can use DAGS at all stages to clarify what potential founders we may want to collect and also which ones to include in our models. 
+
+## A word about colliders
+- A collider is a variable in a DAG where two arrows come together
+- It automatically blocks a path
+- In DAG terminology, a collider is a descendent of both the exposure and the outcome
+- When you condition on a collider, you block a path
+- If you condition on a collider it could bias your estimates
+
+## Conditioning on a collider example from Suttorp (Figure 3)
+- **Hypothesis:** lead poisoning is a cause of polycystic kidney disease (PKD)
+- Question: Is glomular filtration rate (GFR) a confounder?
+- GFD is a marker of poor kidney function
+- GFR is associated with PKD and also with lead poisoning causing us to adjust for it.
+- The DAG clearly shows, however, the arrows do not point in the right direction for it to be a common cause/confounder of PKD and lead poisoning
+
+![](Figure3_Suttorp.png)
+
+## Conditioning on a collider example from Suttorp (Figure 3) (cont.)
+- GFR is a common decendent of lead poisoning and PKD
+- GFR is an effect of lead poisoning and an effect of PKD
+- In DAG terms it is a collider because it has two arrows pointing into it.
+- Let's assume that GFR only has two causes: 1) lead poisoning and 2) PKD
+- If we do our study in a low GFR strata, the absence of lead poisoning would perfectly predict the presence of PKD because the patient would not have low GFR if they did not have PKD 
+- Similarly, the presence of lead poisoning would perfectly predict the absence of PKD becasue the patient would not have low GFR if they did not have lead poisoning
+- We would force an inverse assocation between lead and PKD 
+- Conditioning on a collider can produce wrong results.
+
+## Steps in making a DAG
+
+1. Identify your exposure and your outcome and draw an arrow between them from exposure to outcome
+2. Identify variables that are risk factors for your outcome (through a literature search) and draw an arrow from each risk factor to the outcome
+3. Identify how these variables that are risk factors relate to your exposure (do they have a causal effect on your exposure?) and draw an arrow if they do from the risk factor to the exposure
+4. Identify whether any of the variables that are risk factors cause another variable that is a risk factor and draw an arrow.
+This will allow you to identify all **backdoor paths** to determine which variables to condition on/adjust for. **Backdoor paths** connect your outcome to your exposure. If you condition on them you block the path and control for confounding. You only need a single block on the path to block the path. (thanks to Scott Venners, Simon Frasier University)
+
+## Some points to remember
+
+- Single arrows between two variables indicates a complete causal claim
+- You don't have to adjust for risk factors for your outcome that are not related to your exposure unless your goal is to increase model precision
+- Throwing everything in the model can potentially reduce statistical power, cause you to adjust for mediators and colliders, and lead to biased estimates of cause and effect
+
+## Table II fallacy (important aside otherwise known as "mutual adjustment")
+
+- This is where we interpret the causal effect of more than one variable included in the model
+- This happens a lot in Table 2 of papers
+
+![](table2_1.png){width=50%}
+
+- We can estimate the causal effect of X on Y by adjusting for Z
+- Can we estimate the causal effect of Z on Y by adjusting for X?
+- X is a mediator so adjusting for X would estimate the direct not total effect of Z on Y
+
+## Example from Pubmed
+
+![](Pubmed.png){width=70%}
+
+## Example from Pubmed continued
+![](Pubmedtable.png){width=70%}
+
+## Dagitty
+
+- Let's try making a causal diagram using dagitty http://www.dagitty.net/ 
+- Some dagitty terminology (let's first read for a minute and then play a game)
+
+
+## P-values
+
+## Motivating question
+- **What are p-values useful for and how should they be used (or not used) in making causal inferences from our work?**
+
+## P-values
+- What is a p-value?
+- What does it mean in lay terms?
+- What is the nominal value usually set at?
+
+## P-values True or False (Goodman 2008)
+1. **If P=0.05, the null hypothesis has only a 5% chance of being true.**
+2. **A nonsignificant difference (e.g. P$\ge$.05) means there is no difference between the groups.**
+3. **A statistically significant finding is clinically important.**
+4. **Studies with P-values on the opposite side of .05 are conflicting.**
+5. Studies with the same P-value provide evidence against the null hypothesis.
+6. P=.05 means that we have observed data that would occur only 5% of the time under the null hypothesis
+7. P=.05 and P<=.05 mean the same thing.
+8. P values are properly writen as inequalities (e.g. "P$\le$.02" when P=.015)
+9. **P=.05 means that if you reject the nulll hypothesis, the probability of a type I error is only 5%.**
+10. **With a P=.05 threshold for sigificance, the chance of a type I error will be 5%.**
+11. You should only use a one-sided P-value, when you don't care about a result in one direction, or a difference in that direction is impossible.
+12. **A scientific conclusion or treatment policy should be based on whether or not the P-value is significant.**
+
+## P-value definitions
+- from Stang, Poole, and Kuss, 2010, the 2016 ASA statement, and Goodman 2008
+- "The probability of obtaining an estimate at least as far from a specified value as the estimate we have obtained, if the specified (null or test) value **were the true value**."
+- "The p-value is a tail area probability based on the observed effect estimate; it is calculated as the probability of an effect estimate as large as or larger than the observed estimate, **assuming the null hypothesis is true**."
+- P-values mix magnitude and precision (B/SE)
+- The probability under a specified statistical model that a statistical summary for the data (e.g. the sample mean difference between two compared groups) would be equal to or more extreme than the observed value.
+- "The probability of the observed result, plus more extreme results, if the null hypothesis **were true**".
+
+## P-value visual
+
+![](https://compote.slate.com/images/4bb1d42b-e0d3-4bfa-9b85-103b63977542.jpg){width=55%}
+
+## The father of the P-value-Who was Fisher
+- Sir Ronald Fisher lived from 2/17/1890 to 7/29/1962
+- British statistician and geneticist
+- He was to statistics what Einstein was to physics
+- One of the founders of population genetics
+- Worked at a number of places including Rothamsted Experimental Station, University College London, University of Cambridge, and Adelaide
+- Developed ANOVA among other things
+- Supporter of eugenics
+- Proposed p-value in his book "Statistical Methods for Research Workers"
+
+## Who was Neyman?
+- Jerzy Neyman lived from 4/16/1894 to 8/5/1981
+- Polish statistician
+- Introduced confidence interval and statistical hypothesis testing (Null hypothesis significance testing (NHST)) 
+- Worked mostly at Poland and then at Berkeley
+- He spent some time in England in the 1930s with Egon Pearson (co-inventor of hypothesis testing)
+- Fisher was on the floor above.
+- Fisher referred to the Neyman/Pearson papers as "a pile of junk"
+- Read more here: https://www.umass.edu/wsp/resources/tales/neyman.html
+
+## Two schools for interpreting significance tests
+- **Fisher's school.** 1) Provide a null hypothesis, 2) report the p-value. There is no alternative hypothesis in Fisher's school. The p-value is simply a measure of the strength of the evidence against the null hypothesis. He really meant it to be used for findings that are "worthy of a second look". (Nuzzo, Nature 2014)
+- **Neyman and Pearson's school.** P-values are discussed in terms of the null and alternative hypotheses. This school also includes discussion of Type I and II error probabilities (alpha and beta). Much more mathematically based than Fisher's school.
+- Fisher and Neyman and Pearson had a feud. Fisher called Neyman's approach "childish" and "horrifying [for] intellectual freedom in the west". Neyman said Fisher's approach was "worse than useless" (Nuzzo, Nature 2014)
+
+## What a p-value is not
+- **The probability that the null hypothesis is true** 
+- **The probability that the alternative hypothesis is not true**
+- **A measure of cause and effect**
+- Stang et al (Eur J Epi, 2010) bring up an important question "Does it make sense to adopt a new therapy because the p-value of a single study was 0.048, and at the same time to reject another therapy because the p-value was 0.052?"
+
+## Size/validity of p-values (dependencies)
+1. Sample size
+2. Correct statistical model (remember SEs and how they can be too small when there is poor model fit?)
+3. Correct causal model
+4. No bias and confounding
+
+## What is the problem?
+- Most of published research findings are false due to over-reliance on p-values (you can debate this), especially those with p-values around 0.05.
+![](false.PNG)
+
+## Why is this a *PROBLEM*?
+- Misleading information used to make decisions (public, researcher, journal, funder, policy levels)
+- Could harm patients or individuals we serve with our research!
+
+## An example of p-value misinterpretation in disguise 
+![](Selinger_paper.PNG)
+
+## An example of p-value misinterpretation in disguise continued
+![](Greenland.PNG){width=50%}
+
+## Is lack of statistical evidence for an association consistent with no association?
+
+- Yes or No?
+
+## Carl Sagan said it best
+
+![](http://www.azquotes.com/picture-quotes/quote-the-absence-of-evidence-is-not-the-evidence-of-absence-carl-sagan-43-51-12.jpg)
